@@ -43,10 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.dubbo.common.URL.buildKey;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.decodeInvocationArgument;
 
 public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Decodeable {
@@ -110,16 +107,18 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         setMethodName(in.readUTF());
 
-        String desc = in.readUTF();
-        setParameterTypesDesc(desc);
-
         try {
+
+            if (dubboVersion.startsWith("2.8.4")) {
+                decodeForDubbox(channel, in);
+                return this;
+            }
+
+            String desc = in.readUTF();
+            setParameterTypesDesc(desc);
             Object[] args = DubboCodec.EMPTY_OBJECT_ARRAY;
             Class<?>[] pts = DubboCodec.EMPTY_CLASS_ARRAY;
             if (desc.length() > 0) {
-//                if (RpcUtils.isGenericCall(path, getMethodName()) || RpcUtils.isEcho(path, getMethodName())) {
-//                    pts = ReflectUtils.desc2classArray(desc);
-//                } else {
                 ServiceRepository repository = ApplicationModel.getServiceRepository();
                 ServiceDescriptor serviceDescriptor = repository.lookupService(path);
                 if (serviceDescriptor != null) {
@@ -135,7 +134,6 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
                     }
                     pts = ReflectUtils.desc2classArray(desc);
                 }
-//                }
 
                 args = new Object[pts.length];
                 for (int i = 0; i < args.length; i++) {
@@ -180,4 +178,82 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
         return this;
     }
 
+    protected void decodeForDubbox(Channel channel, ObjectInput in) throws IOException {
+        try {
+            Object[] args;
+            Class<?>[] pts;
+
+            // NOTICE modified by lishen
+            int argNum = in.readInt();
+            if (argNum >= 0) {
+                if (argNum == 0) {
+                    pts = DubboCodec.EMPTY_CLASS_ARRAY;
+                    args = DubboCodec.EMPTY_OBJECT_ARRAY;
+                } else {
+                    args = new Object[argNum];
+                    pts = new Class[argNum];
+                    for (int i = 0; i < args.length; i++) {
+                        try {
+                            args[i] = in.readObject();
+                            pts[i] = args[i].getClass();
+                        } catch (Exception e) {
+                            if (log.isWarnEnabled()) {
+                                log.warn("Decode argument failed: " + e.getMessage(), e);
+                            }
+                        }
+                    }
+                }
+            } else {
+                String desc = in.readUTF();
+                if (desc.length() == 0) {
+                    pts = DubboCodec.EMPTY_CLASS_ARRAY;
+                    args = DubboCodec.EMPTY_OBJECT_ARRAY;
+                } else {
+                    pts = ReflectUtils.desc2classArray(desc);
+                    args = new Object[pts.length];
+                    for (int i = 0; i < args.length; i++) {
+                        try {
+                            args[i] = in.readObject(pts[i]);
+                        } catch (Exception e) {
+                            if (log.isWarnEnabled()) {
+                                log.warn("Decode argument failed: " + e.getMessage(), e);
+                            }
+                        }
+                    }
+                    String realDesc = ReflectUtils.getDesc(pts);
+                    setParameterTypesDesc(realDesc);
+                    ServiceRepository repository = ApplicationModel.getServiceRepository();
+                    ServiceDescriptor serviceDescriptor = repository.lookupService(getAttachment(PATH_KEY));
+                    if (serviceDescriptor != null) {
+                        MethodDescriptor methodDescriptor = serviceDescriptor.getMethod(getMethodName(), realDesc);
+                        if (methodDescriptor != null) {
+                            pts = methodDescriptor.getParameterClasses();
+                            this.setReturnTypes(methodDescriptor.getReturnTypes());
+                        }
+                    }
+                }
+            }
+            setParameterTypes(pts);
+
+            Map<String, Object> map = in.readAttachments();
+            if (map != null && map.size() > 0) {
+                Map<String, Object> attachment = getObjectAttachments();
+                if (attachment == null) {
+                    attachment = new HashMap<>();
+                }
+                attachment.putAll(map);
+                setObjectAttachments(attachment);
+            }
+
+            //decode argument ,may be callback
+            for (int i = 0; i < args.length; i++) {
+                args[i] = decodeInvocationArgument(channel, this, pts, i, args[i]);
+            }
+
+            setArguments(args);
+
+        } catch (ClassNotFoundException e) {
+            throw new IOException(StringUtils.toString("Read invocation data failed.", e));
+        }
+    }
 }

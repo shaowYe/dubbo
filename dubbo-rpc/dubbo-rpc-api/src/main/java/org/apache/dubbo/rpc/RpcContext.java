@@ -24,18 +24,12 @@ import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER_SIDE;
-import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
-import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.rpc.Constants.ASYNC_KEY;
 import static org.apache.dubbo.rpc.Constants.RETURN_KEY;
 
@@ -548,6 +542,17 @@ public class RpcContext {
      */
     @Deprecated
     public Map<String, String> getAttachments() {
+        if (isConsumerSide() && url.getParameter("dubbo").startsWith("2.8.4")) {
+            Map<String, String> convertString = new HashMap<>();
+            for (Map.Entry<String, Object> entry : attachments.entrySet()) {
+                String convertResult = String.class.isInstance(entry.getValue()) ? (String) entry.getValue() : null;
+                if (convertResult != null) {
+                    convertString.put(entry.getKey(), convertResult);
+                }
+            }
+            return convertString;
+        }
+
         return new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
     }
 

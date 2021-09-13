@@ -36,6 +36,8 @@
     <modules>
         <module>dubbo-demo-annotation-provider</module>
         <module>dubbo-demo-annotation-consumer</module>
+        <module>dubbox-demo-consumer</module>
+        <module>dubbox-demo-provider</module>
     </modules>
 
     <build>

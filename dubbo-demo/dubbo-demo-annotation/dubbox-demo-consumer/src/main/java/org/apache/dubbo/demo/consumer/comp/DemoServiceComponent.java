@@ -16,21 +16,18 @@
  */
 package org.apache.dubbo.demo.consumer.comp;
 
-import org.apache.dubbo.config.annotation.DubboReference;
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.dubbo.rpc.RpcContext;
 import org.apache.dubbo.demo.DemoService;
-
 import org.apache.dubbo.demo.GreetingService;
-import org.apache.dubbo.rpc.RpcContext;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
 
 @Component("demoServiceComponent")
 public class DemoServiceComponent {
-    @DubboReference
+    @Reference
     private DemoService demoService;
 
-    @DubboReference
+    @Reference
     private GreetingService greetingService;
 
     public String sayHello(String name) {
@@ -42,5 +39,4 @@ public class DemoServiceComponent {
         RpcContext.getContext().setAttachment("okr", "uyun-okr-greet");
         return greetingService.hello();
     }
-
 }

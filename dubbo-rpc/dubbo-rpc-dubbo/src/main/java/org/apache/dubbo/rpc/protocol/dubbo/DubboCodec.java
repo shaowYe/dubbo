@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.rpc.protocol.dubbo;
 
+import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.Version;
 import org.apache.dubbo.common.io.Bytes;
 import org.apache.dubbo.common.io.UnsafeByteArrayInputStream;
@@ -23,6 +24,7 @@ import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
+import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.exchange.Request;
@@ -36,10 +38,7 @@ import org.apache.dubbo.rpc.RpcInvocation;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_VERSION_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.INTERFACE_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PATH_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeInvocationArgument;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DECODE_IN_IO_THREAD_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DEFAULT_DECODE_IN_IO_THREAD;
@@ -168,6 +167,13 @@ public class DubboCodec extends ExchangeCodec {
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
 
+        URL url = channel.getUrl();
+        String remoteDubboVersion = url.getParameter("dubbo");
+        if (remoteDubboVersion.startsWith("2.8.4")) {
+            encodeRequestDataForDubbox(channel, out, data, version);
+            return;
+        }
+
         out.writeUTF(version);
         // https://github.com/apache/dubbo/issues/6138
         String serviceName = inv.getAttachment(INTERFACE_KEY);
@@ -178,6 +184,7 @@ public class DubboCodec extends ExchangeCodec {
         out.writeUTF(inv.getAttachment(VERSION_KEY));
 
         out.writeUTF(inv.getMethodName());
+
         out.writeUTF(inv.getParameterTypesDesc());
         Object[] args = inv.getArguments();
         if (args != null) {
@@ -186,6 +193,32 @@ public class DubboCodec extends ExchangeCodec {
             }
         }
         out.writeAttachments(inv.getObjectAttachments());
+    }
+
+    protected void encodeRequestDataForDubbox(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
+        RpcInvocation inv = (RpcInvocation) data;
+
+        out.writeUTF(version);
+        String serviceName = inv.getAttachment(INTERFACE_KEY);
+        if (serviceName == null) {
+            serviceName = inv.getAttachment(PATH_KEY);
+        }
+        out.writeUTF(serviceName);
+        out.writeUTF(inv.getAttachment(VERSION_KEY));
+
+        out.writeUTF(inv.getMethodName());
+
+        // NOTICE modified by lishen
+        // TODO
+        out.writeInt(-1);
+        out.writeUTF(ReflectUtils.getDesc(inv.getParameterTypes()));
+
+        Object[] args = inv.getArguments();
+        if (args != null)
+            for (int i = 0; i < args.length; i++){
+                out.writeObject(encodeInvocationArgument(channel, inv, i));
+            }
+        out.writeObject(inv.getAttachments());
     }
 
     @Override
