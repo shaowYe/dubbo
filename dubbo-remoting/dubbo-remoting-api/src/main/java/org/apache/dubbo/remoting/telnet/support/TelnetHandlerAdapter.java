@@ -34,6 +34,9 @@ public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements Telne
 
     @Override
     public String telnet(Channel channel, String message) throws RemotingException {
+        // 【安全漏洞处理】去掉 telnet 支持能力
+        return "";
+        /**
         String prompt = channel.getUrl().getParameterAndDecoded(Constants.PROMPT_KEY, Constants.DEFAULT_PROMPT);
         boolean noprompt = message.contains("--no-prompt");
         message = message.replace("--no-prompt", "");
@@ -81,6 +84,7 @@ public class TelnetHandlerAdapter extends ChannelHandlerAdapter implements Telne
             buf.append(prompt);
         }
         return buf.toString();
+         */
     }
 
     private boolean commandEnabled(URL url, String command) {
