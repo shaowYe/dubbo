@@ -265,17 +265,11 @@ public class RpcInvocation implements Invocation, Serializable {
     @Deprecated
     @Override
     public Map<String, String> getAttachments() {
+        Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
         if (invoker.getUrl().getParameter("dubbo").startsWith("2.8.4")) {
-            Map<String, String> convertString = new HashMap<>();
-            for (Map.Entry<String, Object> entry : attachments.entrySet()) {
-                String convertResult = String.class.isInstance(entry.getValue()) ? (String) entry.getValue() : null;
-                if (convertResult != null) {
-                    convertString.put(entry.getKey(), convertResult);
-                }
-            }
-            return convertString;
+            return new HashMap<>(result);
         }
-        return new AttachmentsAdapter.ObjectToStringMap(attachments);
+        return result;
     }
 
     @Deprecated

@@ -227,6 +227,7 @@ public interface CommonConstants {
     String HOST_KEY = "host";
     String PORT_KEY = "port";
     String DUBBO_IP_TO_BIND = "DUBBO_IP_TO_BIND";
+    String DUBBO_REGISTRY_LOCALADDRESS = "dubbo_registry_localAddress";
 
     /**
      * The property name for {@link NetworkInterface#getDisplayName() the name of network interface} that
