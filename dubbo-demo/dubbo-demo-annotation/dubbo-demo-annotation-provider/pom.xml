@@ -101,6 +101,10 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-filter-uyun</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
