@@ -611,6 +611,13 @@
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-cluster-uyun</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -703,6 +710,7 @@
                                     <include>org.apache.dubbo:dubbo-serialization-native-hession</include>
                                     <include>org.apache.dubbo:dubbo-filter-uyun</include>
                                     <include>org.apache.dubbo:dubbo-registry-delegate-zookeeper</include>
+                                    <include>org.apache.dubbo:dubbo-cluster-uyun</include>
                                 </includes>
                             </artifactSet>
                             <transformers>

@@ -264,6 +264,8 @@ public interface CommonConstants {
 
     String TAG_KEY = "dubbo.tag";
 
+    String GRAY_VERSION = "gray.version";
+
     /**
      * To decide whether to make connection when the client is created
      */
