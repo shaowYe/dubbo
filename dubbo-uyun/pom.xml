@@ -18,8 +18,9 @@
         <skip_maven_deploy>false</skip_maven_deploy>
     </properties>
     <modules>
+        <module>dubbo-cluster-uyun</module>
         <module>dubbo-filter-uyun</module>
-        <module>dubbo-registry-delegate-zookeeper</module>
+        <module>dubbo-registry-zookeeper-delegate</module>
     </modules>
 
 </project>

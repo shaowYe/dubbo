@@ -709,7 +709,7 @@
                                     <include>org.apache.dubbo:dubbo-metadata-report-nacos</include>
                                     <include>org.apache.dubbo:dubbo-serialization-native-hession</include>
                                     <include>org.apache.dubbo:dubbo-filter-uyun</include>
-                                    <include>org.apache.dubbo:dubbo-registry-delegate-zookeeper</include>
+                                    <include>org.apache.dubbo:dubbo-registry-zookeeper-delegate</include>
                                     <include>org.apache.dubbo:dubbo-cluster-uyun</include>
                                 </includes>
                             </artifactSet>

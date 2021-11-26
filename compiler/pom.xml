@@ -234,4 +234,16 @@
         <system>Github Issues</system>
         <url>https://github.com/apache/dubbo/issues</url>
     </issueManagement>
+    <distributionManagement>
+        <repository>
+            <id>uyun-release</id>
+            <name>public release</name>
+            <url>http://www.uyunsoft.cn/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>uyun-snapshot</id>
+            <name>nexus snapshots</name>
+            <url>http://www.uyunsoft.cn/nexus/content/repositories/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

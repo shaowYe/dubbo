@@ -27,7 +27,6 @@ public class DelegateZookeeperRegistry extends ZookeeperRegistry {
     private Map<URL, Boolean> disabledServices = new HashMap<>();
     private Map<URL, Boolean> useParentProviders = new HashMap<>();
 
-
     public DelegateZookeeperRegistry(URL url, URL parentZkUrl, ZookeeperTransporter zookeeperTransporter) {
         super(url, zookeeperTransporter);
 
