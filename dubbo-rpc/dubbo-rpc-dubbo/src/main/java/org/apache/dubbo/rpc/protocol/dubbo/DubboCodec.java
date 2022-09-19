@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.apache.dubbo.common.constants.CommonConstants.*;
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_ExceptionProcess;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeInvocationArgument;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DECODE_IN_IO_THREAD_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DEFAULT_DECODE_IN_IO_THREAD;
@@ -236,8 +237,17 @@ public class DubboCodec extends ExchangeCodec {
                 out.writeObject(ret);
             }
         } else {
-            out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
-            out.writeThrowable(th);
+            try {
+                if (version.startsWith("2.8.4")) {
+                    DUBBOX_ExceptionProcess.set(true);
+                }
+                out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
+                out.writeThrowable(th);
+            } finally {
+                if (version.startsWith("2.8.4")) {
+                    DUBBOX_ExceptionProcess.remove();
+                }
+            }
         }
 
         if (attach) {

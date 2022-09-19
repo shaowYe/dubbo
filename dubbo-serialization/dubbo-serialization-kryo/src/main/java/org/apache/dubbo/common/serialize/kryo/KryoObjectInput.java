@@ -132,10 +132,18 @@ public class KryoObjectInput implements ObjectInput, Cleanable {
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
         // TODO optimization
+        int position = input.position();
+
         try {
             return kryo.readClassAndObject(input);
         } catch (KryoException e) {
-            throw new IOException(e);
+            input.setPosition(position);
+            try {
+                Kryo dubboxKryo = DubboxCompatibleKryo.createDubboxKryo();
+                return  dubboxKryo.readClassAndObject(input);
+            } catch (Exception var) {
+                throw new IOException(e);
+            }
         }
     }
 

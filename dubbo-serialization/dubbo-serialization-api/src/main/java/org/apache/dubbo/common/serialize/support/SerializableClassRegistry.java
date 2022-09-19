@@ -28,6 +28,8 @@ public abstract class SerializableClassRegistry {
 
     private static final Map<Class<?>, Object> REGISTRATIONS = new LinkedHashMap<>();
 
+    public static final ThreadLocal<Boolean> DUBBOX_ExceptionProcess = new ThreadLocal<>();
+
     /**
      * only supposed to be called at startup time
      *
