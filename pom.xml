@@ -154,7 +154,6 @@
         <module>dubbo-build-tools</module>
         <module>dubbo-spring-boot</module>
         <module>dubbo-uyun</module>
-        <module>dubbo-spring-boot</module>
     </modules>
 
     <dependencyManagement>
