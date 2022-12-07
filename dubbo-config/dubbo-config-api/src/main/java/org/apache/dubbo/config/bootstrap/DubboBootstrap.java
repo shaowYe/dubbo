@@ -1066,7 +1066,7 @@ public class DubboBootstrap {
             metadataServiceExporter.unexport();
     }
         }
-    }
+
 
     private void exportServices() {
         configManager.getServices().forEach(sc -> {
