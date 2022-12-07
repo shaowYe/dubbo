@@ -552,7 +552,11 @@ public class RpcContext {
      */
     @Deprecated
     public Map<String, String> getAttachments() {
-        return new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
+        Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
+        if (isConsumerSide() && url.getParameter("dubbo").startsWith("2.8.4")) {
+            return new HashMap<>(result);
+        }
+        return result;
     }
 
     /**

@@ -19,22 +19,28 @@ package org.apache.dubbo.demo.consumer.comp;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.demo.DemoService;
 
+import org.apache.dubbo.demo.GreetingService;
+import org.apache.dubbo.rpc.RpcContext;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
 
 @Component("demoServiceComponent")
-public class DemoServiceComponent implements DemoService {
+public class DemoServiceComponent {
     @DubboReference
     private DemoService demoService;
 
-    @Override
+    @DubboReference
+    private GreetingService greetingService;
+
     public String sayHello(String name) {
+        RpcContext.getContext().setAttachment("okr", "uyun-okr-sayhello");
         return demoService.sayHello(name);
     }
 
-    @Override
-    public CompletableFuture<String> sayHelloAsync(String name) {
-        return null;
+    public String greet() {
+        RpcContext.getContext().setAttachment("okr", "uyun-okr-greet");
+        return greetingService.hello();
     }
+
 }

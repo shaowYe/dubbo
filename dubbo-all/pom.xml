@@ -637,6 +637,29 @@
             <scope>test</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- uyun customize dubbo module dependency -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-filter-uyun</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-registry-zookeeper-delegate</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-cluster-uyun</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -729,6 +752,9 @@
                                     <include>org.apache.dubbo:dubbo-metadata-report-nacos</include>
                                     <include>org.apache.dubbo:dubbo-metadata-report-failover</include>
                                     <include>org.apache.dubbo:dubbo-serialization-native-hession</include>
+                                    <include>org.apache.dubbo:dubbo-filter-uyun</include>
+                                    <include>org.apache.dubbo:dubbo-registry-zookeeper-delegate</include>
+                                    <include>org.apache.dubbo:dubbo-cluster-uyun</include>
                                 </includes>
                             </artifactSet>
                             <transformers>

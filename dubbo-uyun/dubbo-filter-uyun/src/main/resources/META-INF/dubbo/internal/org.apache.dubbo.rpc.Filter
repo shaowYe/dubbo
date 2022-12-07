@@ -1,0 +1,1 @@
+invokerContextFilter=uyun.whale.dubbo.filter.ProviderContextFilter

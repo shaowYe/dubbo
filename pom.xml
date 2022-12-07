@@ -153,6 +153,8 @@
         <module>dubbo-metadata</module>
         <module>dubbo-build-tools</module>
         <module>dubbo-spring-boot</module>
+        <module>dubbo-uyun</module>
+        <module>dubbo-spring-boot</module>
     </modules>
 
     <dependencyManagement>
@@ -564,6 +566,9 @@
                                 <exclude>**/*.load</exclude>
                                 <exclude>**/*.flex</exclude>
                                 <exclude>**/*.fc</exclude>
+                                <exclude>**/*.javascript</exclude>
+                                <exclude>**/*.properties</exclude>
+                                <exclude>**/*.thrift</exclude>
                                 <exclude>**/*.sh</exclude>
                                 <exclude>**/*.bat</exclude>
                                 <exclude>**/*.md</exclude>
@@ -717,4 +722,16 @@
             </plugins>
         </pluginManagement>
     </build>
+    <distributionManagement>
+        <repository>
+            <id>uyun-release</id>
+            <name>public release</name>
+            <url>http://www.uyunsoft.cn/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>uyun-snapshot</id>
+            <name>nexus snapshots</name>
+            <url>http://www.uyunsoft.cn/nexus/content/repositories/snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

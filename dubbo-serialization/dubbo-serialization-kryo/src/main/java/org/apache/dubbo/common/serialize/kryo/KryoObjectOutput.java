@@ -26,6 +26,8 @@ import com.esotericsoftware.kryo.io.Output;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_ExceptionProcess;
+
 /**
  * Kryo object output implementation, kryo object can be clean
  */
@@ -103,6 +105,16 @@ public class KryoObjectOutput implements ObjectOutput, Cleanable {
     public void writeObject(Object v) throws IOException {
         // TODO carries class info every time.
         kryo.writeClassAndObject(output, v);
+    }
+
+    @Override
+    public void writeThrowable(Object v) throws IOException {
+        if (DUBBOX_ExceptionProcess.get() != null && DUBBOX_ExceptionProcess.get()) {
+            Kryo dubboxKryo = DubboxCompatibleKryo.createDubboxKryo();
+            dubboxKryo.writeClassAndObject(output, v);
+        } else {
+            kryo.writeClassAndObject(output, v);
+        }
     }
 
     @Override

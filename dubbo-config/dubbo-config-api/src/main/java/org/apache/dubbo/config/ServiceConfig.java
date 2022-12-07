@@ -578,6 +578,9 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         boolean anyhost = false;
 
         String hostToBind = getValueFromConfig(protocolConfig, DUBBO_IP_TO_BIND);
+        if (StringUtils.isEmpty(hostToBind)) {
+            hostToBind = getValueFromConfig(protocolConfig, DUBBO_REGISTRY_LOCALADDRESS);
+        }
         if (hostToBind != null && hostToBind.length() > 0 && isInvalidLocalHost(hostToBind)) {
             throw new IllegalArgumentException("Specified invalid bind ip from property:" + DUBBO_IP_TO_BIND + ", value:" + hostToBind);
         }

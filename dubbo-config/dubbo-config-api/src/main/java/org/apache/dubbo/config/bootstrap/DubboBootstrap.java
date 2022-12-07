@@ -1064,6 +1064,7 @@ public class DubboBootstrap {
     private void unexportMetadataService() {
         if (metadataServiceExporter != null && metadataServiceExporter.isExported()) {
             metadataServiceExporter.unexport();
+    }
         }
     }
 

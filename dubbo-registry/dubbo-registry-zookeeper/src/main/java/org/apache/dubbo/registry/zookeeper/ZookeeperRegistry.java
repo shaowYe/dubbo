@@ -231,14 +231,14 @@ public class ZookeeperRegistry extends FailbackRegistry {
         }
     }
 
-    private String toRootDir() {
+    protected String toRootDir() {
         if (root.equals(PATH_SEPARATOR)) {
             return root;
         }
         return root + PATH_SEPARATOR;
     }
 
-    private String toRootPath() {
+    protected String toRootPath() {
         return root;
     }
 
@@ -250,7 +250,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
         return toRootDir() + URL.encode(name);
     }
 
-    private String[] toCategoriesPath(URL url) {
+    protected String[] toCategoriesPath(URL url) {
         String[] categories;
         if (ANY_VALUE.equals(url.getParameter(CATEGORY_KEY))) {
             categories = new String[]{PROVIDERS_CATEGORY, CONSUMERS_CATEGORY, ROUTERS_CATEGORY, CONFIGURATORS_CATEGORY};

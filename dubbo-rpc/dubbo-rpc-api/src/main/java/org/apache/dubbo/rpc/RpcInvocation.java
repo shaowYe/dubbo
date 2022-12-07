@@ -277,7 +277,11 @@ public class RpcInvocation implements Invocation, Serializable {
     @Deprecated
     @Override
     public Map<String, String> getAttachments() {
-        return new AttachmentsAdapter.ObjectToStringMap(attachments);
+        Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
+        if (invoker.getUrl().getParameter("dubbo").startsWith("2.8.4")) {
+            return new HashMap<>(result);
+        }
+        return result;
     }
 
     @Deprecated

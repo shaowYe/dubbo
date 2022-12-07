@@ -33,25 +33,15 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import static java.util.Collections.emptyList;
-import static org.apache.dubbo.common.constants.CommonConstants.ANYHOST_VALUE;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_IP_TO_BIND;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_PREFERRED_NETWORK_INTERFACE;
-import static org.apache.dubbo.common.constants.CommonConstants.LOCALHOST_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.LOCALHOST_VALUE;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO_NETWORK_IGNORED_INTERFACE;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.common.utils.CollectionUtils.first;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 
 /**
  * IP and Port Helper for RPC
@@ -259,6 +249,11 @@ public class NetUtils {
             return configIp;
         }
 
+        configIp = ConfigurationUtils.getProperty(DUBBO_REGISTRY_LOCALADDRESS);
+        if (configIp != null) {
+            return configIp;
+        }
+
         return getLocalHost();
     }
 
@@ -333,12 +328,13 @@ public class NetUtils {
      * @throws SocketException SocketException if an I/O error occurs.
      */
     private static boolean ignoreNetworkInterface(NetworkInterface networkInterface) throws SocketException {
-        if (networkInterface == null
+       if(networkInterface == null
                 || networkInterface.isLoopback()
                 || networkInterface.isVirtual()
-                || !networkInterface.isUp()){
-            return true;
-        }
+                || !networkInterface.isUp()
+                || networkInterface.getName().toLowerCase().contains("docker")) {
+           return true;
+       }
         String ignoredInterfaces = System.getProperty(DUBBO_NETWORK_IGNORED_INTERFACE);
         String networkInterfaceDisplayName;
         if(StringUtils.isNotEmpty(ignoredInterfaces)

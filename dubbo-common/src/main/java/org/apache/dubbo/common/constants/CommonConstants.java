@@ -239,6 +239,7 @@ public interface CommonConstants {
     String HOST_KEY = "host";
     String PORT_KEY = "port";
     String DUBBO_IP_TO_BIND = "DUBBO_IP_TO_BIND";
+    String DUBBO_REGISTRY_LOCALADDRESS = "dubbo_registry_localAddress";
 
     /**
      * broadcast cluster.
@@ -287,6 +288,8 @@ public interface CommonConstants {
     String DUBBO_VERSION_KEY = "dubbo";
 
     String TAG_KEY = "dubbo.tag";
+
+    String GRAY_VERSION = "gray.version";
 
     /**
      * To decide whether to make connection when the client is created
