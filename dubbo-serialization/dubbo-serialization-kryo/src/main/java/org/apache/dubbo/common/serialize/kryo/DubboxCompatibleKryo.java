@@ -24,7 +24,7 @@ import com.esotericsoftware.kryo.serializers.JavaSerializer;
 import de.javakaffee.kryoserializers.*;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
-import org.apache.dubbo.common.serialize.kryo.utils.ReflectionUtils;
+import org.apache.dubbo.common.utils.ReflectUtils;
 
 import java.lang.reflect.InvocationHandler;
 import java.math.BigDecimal;
@@ -59,7 +59,7 @@ public class DubboxCompatibleKryo extends Kryo {
         }
         
         // 使用 Java 默认序列化
-        if (!type.isArray() && !type.isEnum() && !ReflectionUtils.checkZeroArgConstructor(type)) {
+        if (!type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
             if (logger.isWarnEnabled()) {
                 logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
             }
