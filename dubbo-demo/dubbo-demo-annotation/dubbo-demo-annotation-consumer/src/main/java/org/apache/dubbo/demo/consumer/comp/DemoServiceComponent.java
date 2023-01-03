@@ -21,16 +21,15 @@ import org.apache.dubbo.demo.DemoService;
 
 import org.apache.dubbo.demo.GreetingService;
 import org.apache.dubbo.rpc.RpcContext;
+import org.apache.dubbo.rpc.support.ServiceUtils;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CompletableFuture;
 
 @Component("demoServiceComponent")
 public class DemoServiceComponent {
-    @DubboReference
+    @DubboReference(check = false)
     private DemoService demoService;
 
-    @DubboReference
+    @DubboReference(check = false)
     private GreetingService greetingService;
 
     public String sayHello(String name) {
@@ -41,6 +40,11 @@ public class DemoServiceComponent {
     public String greet() {
         RpcContext.getContext().setAttachment("okr", "uyun-okr-greet");
         return greetingService.hello();
+    }
+    
+    public String check(){
+        boolean check = ServiceUtils.isAvailable(demoService);
+        return String.valueOf(check);
     }
 
 }
