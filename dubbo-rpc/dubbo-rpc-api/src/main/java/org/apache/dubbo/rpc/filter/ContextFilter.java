@@ -75,8 +75,9 @@ public class ContextFilter implements Filter, Filter.Listener {
 
         // Remove async property to avoid being passed to the following invoke chain.
         UNLOADING_KEYS.add(ASYNC_KEY);
-        UNLOADING_KEYS.add(TAG_KEY);
-        UNLOADING_KEYS.add(FORCE_USE_TAG);
+        //tag router
+//        UNLOADING_KEYS.add(TAG_KEY);
+//        UNLOADING_KEYS.add(FORCE_USE_TAG);
     }
 
     @Override
