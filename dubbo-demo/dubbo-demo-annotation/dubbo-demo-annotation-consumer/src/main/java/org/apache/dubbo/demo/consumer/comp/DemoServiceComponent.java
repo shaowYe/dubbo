@@ -21,7 +21,6 @@ import org.apache.dubbo.demo.DemoService;
 
 import org.apache.dubbo.demo.GreetingService;
 import org.apache.dubbo.rpc.RpcContext;
-import org.apache.dubbo.rpc.support.ServiceUtils;
 import org.springframework.stereotype.Component;
 
 @Component("demoServiceComponent")
@@ -42,9 +41,6 @@ public class DemoServiceComponent {
         return greetingService.hello();
     }
     
-    public String check(){
-        boolean check = ServiceUtils.isAvailable(demoService);
-        return String.valueOf(check);
-    }
+
 
 }
