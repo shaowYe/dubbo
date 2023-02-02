@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
  */
 public class DubboxCompatibleKryo extends Kryo {
 
-    private static final Logger logger = LoggerFactory.getLogger(CompatibleKryo.class);
+    private static final Logger logger = LoggerFactory.getLogger(DubboxCompatibleKryo.class);
 
     @Override
     public Serializer getDefaultSerializer(Class type) {
