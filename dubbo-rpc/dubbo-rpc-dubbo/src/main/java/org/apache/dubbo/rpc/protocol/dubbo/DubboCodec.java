@@ -183,8 +183,10 @@ public class DubboCodec extends ExchangeCodec {
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
 
-        URL url = channel.getUrl();
-        String remoteDubboVersion = url.getParameter("dubbo");
+//        URL url = channel.getUrl();
+//        String remoteDubboVersion = url.getParameter("dubbo");
+        // fix channel复用影响 channel取到的version与实际的不一致
+        String remoteDubboVersion = inv.getInvoker().getUrl().getParameter("dubbo");
         if (remoteDubboVersion.startsWith("2.8.4")) {
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
