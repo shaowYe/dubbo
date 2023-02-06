@@ -33,10 +33,9 @@ public class DubboConsumerApplication {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ConsumerConfiguration.class);
         context.start();
         DemoServiceComponent service = context.getBean("demoServiceComponent", DemoServiceComponent.class);
-//        String hello = service.sayHello("Uyun");
-//        System.out.println("result :" + hello);
-//        System.out.println(service.greet());
-        System.out.println(service.check());
+        String hello = service.sayHello("Uyun");
+        System.out.println("result :" + hello);
+        System.out.println(service.greet());
 
 
     }
