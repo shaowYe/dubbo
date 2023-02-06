@@ -50,22 +50,26 @@ public class DubboxCompatibleKryo extends Kryo {
 
         // 指定了DefaultSerializer
         if (type.isAnnotationPresent(DefaultSerializer.class)) {
-        	if (type.isEnum()) {
-            return new EnumSerializer(type);
-          }
-          if (type.isAssignableFrom(EnumMap.class)) {
-            return new EnumMapSerializer();
-          }
+            if (type.isEnum()) {
+                return new EnumSerializer(type);
+            }
+            if (type.isAssignableFrom(EnumMap.class)) {
+                return new EnumMapSerializer();
+            }
         }
-        
+
         // 使用 Java 默认序列化
         if (!type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
-            if (logger.isWarnEnabled()) {
-                logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
+            //java.开头的内部类不告警
+            if (!type.getName().startsWith("java.")) {
+                if (logger.isWarnEnabled()) {
+                    logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
+                }
             }
+
             return new JavaSerializer();
         }
-        
+
         return super.getDefaultSerializer(type);
     }
 
