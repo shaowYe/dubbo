@@ -1,12 +1,12 @@
 /**
  * Copyright 1999-2014 dangdang.com.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,14 +59,10 @@ public class DubboxCompatibleKryo extends Kryo {
         }
 
         // 使用 Java 默认序列化
-        if (!type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
-            //java.开头的内部类不告警
-            if (!type.getName().startsWith("java.")) {
-                if (logger.isWarnEnabled()) {
-                    logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
-                }
+        if (!ReflectUtils.isJdk(type) && !type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
+            if (logger.isWarnEnabled()) {
+                logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
             }
-
             return new JavaSerializer();
         }
 
