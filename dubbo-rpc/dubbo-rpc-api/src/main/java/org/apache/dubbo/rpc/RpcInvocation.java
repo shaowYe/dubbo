@@ -19,6 +19,7 @@ package org.apache.dubbo.rpc;
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.utils.ReflectUtils;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.remoting.utils.DubboXUtils;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.MethodDescriptor;
 import org.apache.dubbo.rpc.model.ServiceDescriptor;
@@ -278,7 +279,7 @@ public class RpcInvocation implements Invocation, Serializable {
     @Override
     public Map<String, String> getAttachments() {
         Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
-        if (invoker.getUrl().getParameter("dubbo").startsWith("2.8.4")) {
+        if (DubboXUtils.checkDubboX(invoker.getUrl().getParameter("dubbo"))) {
             return new HashMap<>(result);
         }
         return result;

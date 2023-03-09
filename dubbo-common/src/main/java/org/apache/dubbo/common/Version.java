@@ -47,6 +47,7 @@ public final class Version {
     // Dubbo implementation version, usually is jar version.
     private static final String VERSION = getVersion(Version.class, "");
 
+    private static final String UYUN_VERSION ="2.7.18-uyun";
     /**
      * For protocol compatibility purpose.
      * Because {@link #isSupportResponseAttachment} is checked for every call, int compare expect to has higher
@@ -156,49 +157,53 @@ public final class Version {
         }
         return "";
     }
-
-    public static String getVersion(Class<?> cls, String defaultVersion) {
-        try {
-            // find version info from MANIFEST.MF first
-            Package pkg = cls.getPackage();
-            String version = null;
-            if (pkg != null) {
-                version = pkg.getImplementationVersion();
-                if (StringUtils.isNotEmpty(version)) {
-                    return version;
-                }
-
-                version = pkg.getSpecificationVersion();
-                if (StringUtils.isNotEmpty(version)) {
-                    return version;
-                }
-            }
-
-            // guess version from jar file name if nothing's found from MANIFEST.MF
-            CodeSource codeSource = cls.getProtectionDomain().getCodeSource();
-            if (codeSource == null) {
-                logger.info("No codeSource for class " + cls.getName() + " when getVersion, use default version " + defaultVersion);
-                return defaultVersion;
-            }
-
-            URL location = codeSource.getLocation();
-            if (location == null){
-                logger.info("No location for class " + cls.getName() + " when getVersion, use default version " + defaultVersion);
-                return defaultVersion;
-            }
-            String file =  location.getFile();
-            if (!StringUtils.isEmpty(file) && file.endsWith(".jar")) {
-                version = getFromFile(file);
-            }
-
-            // return default version if no version info is found
-            return StringUtils.isEmpty(version) ? defaultVersion : version;
-        } catch (Throwable e) {
-            // return default version when any exception is thrown
-            logger.error("return default version, ignore exception " + e.getMessage(), e);
-            return defaultVersion;
-        }
+    // 固定dubbo版本号
+    public static String getVersion(Class<?> cls, String defaultVersion){
+        return UYUN_VERSION;
     }
+
+//    public static String getVersion(Class<?> cls, String defaultVersion) {
+//        try {
+//            // find version info from MANIFEST.MF first
+//            Package pkg = cls.getPackage();
+//            String version = null;
+//            if (pkg != null) {
+//                version = pkg.getImplementationVersion();
+//                if (StringUtils.isNotEmpty(version)) {
+//                    return version;
+//                }
+//
+//                version = pkg.getSpecificationVersion();
+//                if (StringUtils.isNotEmpty(version)) {
+//                    return version;
+//                }
+//            }
+//
+//            // guess version from jar file name if nothing's found from MANIFEST.MF
+//            CodeSource codeSource = cls.getProtectionDomain().getCodeSource();
+//            if (codeSource == null) {
+//                logger.info("No codeSource for class " + cls.getName() + " when getVersion, use default version " + defaultVersion);
+//                return defaultVersion;
+//            }
+//
+//            URL location = codeSource.getLocation();
+//            if (location == null){
+//                logger.info("No location for class " + cls.getName() + " when getVersion, use default version " + defaultVersion);
+//                return defaultVersion;
+//            }
+//            String file =  location.getFile();
+//            if (!StringUtils.isEmpty(file) && file.endsWith(".jar")) {
+//                version = getFromFile(file);
+//            }
+//
+//            // return default version if no version info is found
+//            return StringUtils.isEmpty(version) ? defaultVersion : version;
+//        } catch (Throwable e) {
+//            // return default version when any exception is thrown
+//            logger.error("return default version, ignore exception " + e.getMessage(), e);
+//            return defaultVersion;
+//        }
+//    }
 
     /**
      * get version from file: path/to/group-module-x.y.z.jar, returns x.y.z

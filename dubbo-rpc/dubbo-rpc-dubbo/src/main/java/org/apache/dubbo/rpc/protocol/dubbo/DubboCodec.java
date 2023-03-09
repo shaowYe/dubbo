@@ -16,7 +16,6 @@
  */
 package org.apache.dubbo.rpc.protocol.dubbo;
 
-import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.Version;
 import org.apache.dubbo.common.io.Bytes;
 import org.apache.dubbo.common.io.UnsafeByteArrayInputStream;
@@ -32,6 +31,7 @@ import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.exchange.Response;
 import org.apache.dubbo.remoting.exchange.codec.ExchangeCodec;
 import org.apache.dubbo.remoting.transport.CodecSupport;
+import org.apache.dubbo.remoting.utils.DubboXUtils;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Result;
@@ -187,7 +187,8 @@ public class DubboCodec extends ExchangeCodec {
 //        String remoteDubboVersion = url.getParameter("dubbo");
         // fix channel复用影响 channel取到的version与实际的不一致
         String remoteDubboVersion = inv.getInvoker().getUrl().getParameter("dubbo");
-        if (remoteDubboVersion.startsWith("2.8.4")) {
+        //判断是不是dubboX
+        if (DubboXUtils.checkDubboX(remoteDubboVersion)) {
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
         }
@@ -255,13 +256,13 @@ public class DubboCodec extends ExchangeCodec {
             }
         } else {
             try {
-                if (version.startsWith("2.8.4")) {
+                if (DubboXUtils.checkDubboX(version)) {
                     DUBBOX_ExceptionProcess.set(true);
                 }
                 out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
                 out.writeThrowable(th);
             } finally {
-                if (version.startsWith("2.8.4")) {
+                if (DubboXUtils.checkDubboX(version)) {
                     DUBBOX_ExceptionProcess.remove();
                 }
             }

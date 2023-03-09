@@ -22,6 +22,7 @@ import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.remoting.utils.DubboXUtils;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -553,7 +554,7 @@ public class RpcContext {
     @Deprecated
     public Map<String, String> getAttachments() {
         Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
-        if (isConsumerSide() && url.getParameter("dubbo").startsWith("2.8.4")) {
+        if (isConsumerSide() && DubboXUtils.checkDubboX(url.getParameter("dubbo"))) {
             return new HashMap<>(result);
         }
         return result;

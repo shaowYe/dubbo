@@ -44,18 +44,23 @@ class TelnetHandlerAdapterTest {
 
         String message = "--no-prompt status ";
         String expectedResult = "OK\r\n";
+        // 去掉了telnet功能
+        expectedResult = StringUtils.EMPTY_STRING;
         Assertions.assertEquals(expectedResult, telnetHandlerAdapter.telnet(channel, message));
 
         message = "--no-prompt status test";
         expectedResult = "Unsupported parameter test for status.\r\n";
+        expectedResult = StringUtils.EMPTY_STRING;
         Assertions.assertEquals(expectedResult, telnetHandlerAdapter.telnet(channel, message));
 
         message = "--no-prompt test";
         expectedResult = "Unsupported command: test\r\n";
+        expectedResult = StringUtils.EMPTY_STRING;
         Assertions.assertEquals(expectedResult, telnetHandlerAdapter.telnet(channel, message));
 
         message = "--no-prompt help";
         expectedResult = "Command: help disabled for security reasons, please enable support by listing the commands through 'telnet'\r\n";
+        expectedResult = StringUtils.EMPTY_STRING;
         Assertions.assertEquals(expectedResult, telnetHandlerAdapter.telnet(channel, message));
 
         message = "--no-prompt";
@@ -64,6 +69,7 @@ class TelnetHandlerAdapterTest {
 
         message = "help";
         expectedResult = "Command: help disabled for security reasons, please enable support by listing the commands through 'telnet'\r\ndubbo>";
+        expectedResult = StringUtils.EMPTY_STRING;
         Assertions.assertEquals(expectedResult, telnetHandlerAdapter.telnet(channel, message));
     }
 

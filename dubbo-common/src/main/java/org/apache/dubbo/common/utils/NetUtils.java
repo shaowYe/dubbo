@@ -24,15 +24,7 @@ import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.logger.support.FailsafeLogger;
 
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.ServerSocket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Pattern;
@@ -41,7 +33,6 @@ import java.util.regex.PatternSyntaxException;
 import static java.util.Collections.emptyList;
 import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.common.utils.CollectionUtils.first;
-import static org.apache.dubbo.common.constants.CommonConstants.*;
 
 /**
  * IP and Port Helper for RPC
@@ -323,23 +314,27 @@ public class NetUtils {
 
     /**
      * Returns {@code true} if the specified {@link NetworkInterface} should be ignored with the given conditions.
+     *
      * @param networkInterface the {@link NetworkInterface} to check
      * @return {@code true} if the specified {@link NetworkInterface} should be ignored, otherwise {@code false}
      * @throws SocketException SocketException if an I/O error occurs.
      */
     private static boolean ignoreNetworkInterface(NetworkInterface networkInterface) throws SocketException {
-       if(networkInterface == null
+        if (networkInterface == null
                 || networkInterface.isLoopback()
                 || networkInterface.isVirtual()
                 || !networkInterface.isUp()
-                || networkInterface.getName().toLowerCase().contains("docker")) {
-           return true;
-       }
+                //增加非空判定
+                || (networkInterface.getName() != null && networkInterface.getName().toLowerCase().contains("docker"))
+        ) {
+            return true;
+        }
+
         String ignoredInterfaces = System.getProperty(DUBBO_NETWORK_IGNORED_INTERFACE);
         String networkInterfaceDisplayName;
-        if(StringUtils.isNotEmpty(ignoredInterfaces)
-                &&StringUtils.isNotEmpty(networkInterfaceDisplayName=networkInterface.getDisplayName())){
-            for(String ignoredInterface: ignoredInterfaces.split(",")){
+        if (StringUtils.isNotEmpty(ignoredInterfaces)
+                && StringUtils.isNotEmpty(networkInterfaceDisplayName = networkInterface.getDisplayName())) {
+            for (String ignoredInterface : ignoredInterfaces.split(",")) {
                 String trimIgnoredInterface = ignoredInterface.trim();
                 boolean matched = false;
                 try {
