@@ -78,4 +78,10 @@ public class VersionTest {
         Assertions.assertTrue(Version.isRelease263OrHigher("2.6.3"));
         Assertions.assertTrue(Version.isRelease263OrHigher("2.6.3.0"));
     }
+    @Test
+    public void getUyunVersion() {
+        Assertions.assertEquals(Version.getVersion(),"2.7.18-uyun");
+
+    }
+
 }
