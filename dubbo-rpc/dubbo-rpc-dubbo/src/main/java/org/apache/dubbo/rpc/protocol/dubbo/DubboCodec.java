@@ -188,6 +188,9 @@ public class DubboCodec extends ExchangeCodec {
         // fix channel复用影响 channel取到的version与实际的不一致
         String remoteDubboVersion = inv.getInvoker().getUrl().getParameter("dubbo");
         //判断是不是dubboX
+        if (log.isInfoEnabled()) {
+            log.info(" provider version: " + version);
+        }
         if (DubboXUtils.checkDubboX(remoteDubboVersion)) {
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
@@ -256,6 +259,9 @@ public class DubboCodec extends ExchangeCodec {
             }
         } else {
             try {
+                if (log.isInfoEnabled()) {
+                    log.info("comsumer version :" + version);
+                }
                 if (DubboXUtils.checkDubboX(version)) {
                     DUBBOX_ExceptionProcess.set(true);
                 }
