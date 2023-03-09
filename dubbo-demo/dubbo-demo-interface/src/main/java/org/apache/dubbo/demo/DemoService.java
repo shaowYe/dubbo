@@ -16,6 +16,9 @@
  */
 package org.apache.dubbo.demo;
 
+import org.apache.dubbo.demo.bean.ComplicatedReq;
+import org.apache.dubbo.demo.bean.ComplicatedResp;
+
 import java.util.concurrent.CompletableFuture;
 
 public interface DemoService {
@@ -25,5 +28,9 @@ public interface DemoService {
     default CompletableFuture<String> sayHelloAsync(String name) {
         return CompletableFuture.completedFuture(sayHello(name));
     }
+
+    String error(String error);
+
+    ComplicatedResp queryComplicated(ComplicatedReq complicatedReq);
 
 }

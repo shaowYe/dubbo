@@ -17,6 +17,8 @@
 package org.apache.dubbo.demo.provider;
 
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.bean.ComplicatedReq;
+import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.apache.dubbo.rpc.RpcContext;
 
 import org.slf4j.Logger;
@@ -35,6 +37,17 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public CompletableFuture<String> sayHelloAsync(String name) {
+        return null;
+    }
+
+    @Override
+    public String error(String error) {
+        throw new RuntimeException("this is an exception from provider");
+
+    }
+
+    @Override
+    public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
         return null;
     }
 

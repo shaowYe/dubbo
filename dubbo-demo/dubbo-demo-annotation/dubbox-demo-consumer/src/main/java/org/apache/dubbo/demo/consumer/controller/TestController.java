@@ -19,4 +19,30 @@ public class TestController {
         String r2 = demoServiceComponent.greet();
         return r1 + r2;
     }
+
+    @GetMapping("/excetion")
+    @ResponseBody
+    public String callError() {
+        String em = "";
+        try {
+            demoServiceComponent.error("rrrer");
+        } catch (Exception e) {
+            em = e.getMessage();
+            e.printStackTrace();
+        }
+        return em;
+    }
+
+
+    @GetMapping("/res")
+    @ResponseBody
+    public String res() {
+        String em = "";
+
+        demoServiceComponent.res();
+
+        return em;
+
+    }
+
 }

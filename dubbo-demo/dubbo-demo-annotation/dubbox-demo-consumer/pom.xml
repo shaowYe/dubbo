@@ -152,12 +152,24 @@
             <version>0.1</version>
         </dependency>
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
+            <groupId>com.esotericsoftware.kryo</groupId>
             <artifactId>kryo</artifactId>
+            <version>2.24.0</version>
         </dependency>
         <dependency>
             <groupId>de.javakaffee</groupId>
             <artifactId>kryo-serializers</artifactId>
+            <version>0.26</version>
+        </dependency>
+        <dependency>
+            <groupId>uyun.pacific</groupId>
+            <artifactId>pacific-model-api</artifactId>
+            <version>2.0.9.11</version>
+        </dependency>
+        <dependency>
+            <groupId>uyun.pacific</groupId>
+            <artifactId>pacific-resource-api</artifactId>
+            <version>2.0.9.11</version>
         </dependency>
     </dependencies>
 

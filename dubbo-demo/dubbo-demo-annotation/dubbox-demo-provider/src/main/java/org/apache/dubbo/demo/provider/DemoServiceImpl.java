@@ -20,6 +20,8 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.rpc.RpcContext;
 import org.apache.dubbo.demo.DemoService;
 
+import org.apache.dubbo.demo.bean.ComplicatedReq;
+import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,4 +43,16 @@ public class DemoServiceImpl implements DemoService {
         return null;
     }
 
+
+
+    @Override
+    public String error(String error) {
+        throw new RuntimeException("this is an exception from provider");
+
+    }
+
+    @Override
+    public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
+        return null;
+    }
 }
