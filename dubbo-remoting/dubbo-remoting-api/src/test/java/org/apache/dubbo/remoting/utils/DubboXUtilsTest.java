@@ -20,6 +20,8 @@ public class DubboXUtilsTest {
         String s7 = "2.7.8.2020";
         String s8 = "2.7.18.20230215";
 
+        String s9 = " ";
+
         Assertions.assertEquals(DubboXUtils.checkDubboX(s1),false);
         Assertions.assertEquals(DubboXUtils.checkDubboX(s2),false);
         Assertions.assertEquals(DubboXUtils.checkDubboX(s3),false);
@@ -29,6 +31,6 @@ public class DubboXUtilsTest {
         Assertions.assertEquals(DubboXUtils.checkDubboX(s7),false);
         Assertions.assertEquals(DubboXUtils.checkDubboX(s8),false);
 
-
+        Assertions.assertEquals(DubboXUtils.checkDubboX(s9),true);
     }
 }
