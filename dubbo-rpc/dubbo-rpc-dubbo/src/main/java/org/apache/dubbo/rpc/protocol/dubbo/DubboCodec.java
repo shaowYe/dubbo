@@ -260,7 +260,7 @@ public class DubboCodec extends ExchangeCodec {
         } else {
             try {
                 if (log.isInfoEnabled()) {
-                    log.info("comsumer version :" + version);
+                    log.info("consumer version :" + version);
                 }
                 if (DubboXUtils.checkDubboX(version)) {
                     DUBBOX_ExceptionProcess.set(true);
