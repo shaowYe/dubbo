@@ -25,22 +25,12 @@ import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.utils.DubboXUtils;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import static org.apache.dubbo.common.constants.CommonConstants.CONSUMER_SIDE;
-import static org.apache.dubbo.common.constants.CommonConstants.DUBBO;
-import static org.apache.dubbo.common.constants.CommonConstants.GROUP_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PROTOCOL_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.PROVIDER_SIDE;
-import static org.apache.dubbo.common.constants.CommonConstants.SIDE_KEY;
-import static org.apache.dubbo.common.constants.CommonConstants.VERSION_KEY;
+import static org.apache.dubbo.common.constants.CommonConstants.*;
 import static org.apache.dubbo.rpc.Constants.ASYNC_KEY;
 import static org.apache.dubbo.rpc.Constants.RETURN_KEY;
 
@@ -554,7 +544,7 @@ public class RpcContext {
     @Deprecated
     public Map<String, String> getAttachments() {
         Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
-        if (isConsumerSide() && DubboXUtils.checkDubboX(url.getParameter("dubbo"))) {
+        if (isConsumerSide() && DubboXUtils.checkDubboXURL(url)) {
             return new HashMap<>(result);
         }
         return result;

@@ -279,7 +279,7 @@ public class RpcInvocation implements Invocation, Serializable {
     @Override
     public Map<String, String> getAttachments() {
         Map<String, String> result = new AttachmentsAdapter.ObjectToStringMap(this.getObjectAttachments());
-        if (DubboXUtils.checkDubboX(invoker.getUrl().getParameter("dubbo"))) {
+        if (DubboXUtils.checkDubboXURL(invoker.getUrl())) {
             return new HashMap<>(result);
         }
         return result;

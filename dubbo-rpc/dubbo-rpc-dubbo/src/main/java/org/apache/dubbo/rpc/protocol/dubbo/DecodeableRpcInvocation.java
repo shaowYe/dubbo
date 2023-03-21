@@ -118,10 +118,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
 
         try {
-            if (log.isInfoEnabled()) {
-                log.info("decode from input, consumer version: " + version);
-            }
-            if (DubboXUtils.checkDubboX(version)) {
+            log.info("decode from input, consumer version: " + dubboVersion);
+            if (DubboXUtils.checkDubboX(dubboVersion)) {
                 decodeForDubbox(channel, in);
                 return this;
             }

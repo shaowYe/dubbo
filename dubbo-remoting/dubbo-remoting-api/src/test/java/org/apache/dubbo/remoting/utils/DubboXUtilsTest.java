@@ -22,6 +22,8 @@ public class DubboXUtilsTest {
 
         String s9 = " ";
 
+        String s10= "2.0.2";
+
         Assertions.assertEquals(DubboXUtils.checkDubboX(s1),false);
         Assertions.assertEquals(DubboXUtils.checkDubboX(s2),false);
         Assertions.assertEquals(DubboXUtils.checkDubboX(s3),false);
@@ -32,5 +34,6 @@ public class DubboXUtilsTest {
         Assertions.assertEquals(DubboXUtils.checkDubboX(s8),false);
 
         Assertions.assertEquals(DubboXUtils.checkDubboX(s9),true);
+        Assertions.assertEquals(DubboXUtils.checkDubboX(s10),false);
     }
 }
