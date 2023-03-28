@@ -59,8 +59,8 @@ public class DubboxCompatibleKryo extends Kryo {
         }
 
         // 使用 Java 默认序列化
-        if (!ReflectUtils.isJdk(type) && !type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
-            if (logger.isWarnEnabled()) {
+        if (!type.isArray() && !type.isEnum() && !ReflectUtils.checkZeroArgConstructor(type)) {
+            if (!ReflectUtils.isJdk(type) && logger.isWarnEnabled()) {
                 logger.warn(type + " has no zero-arg constructor and this will affect the serialization performance");
             }
             return new JavaSerializer();
