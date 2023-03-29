@@ -24,6 +24,7 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class DemoServiceImpl implements DemoService {
@@ -61,6 +62,16 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
+        return null;
+    }
+
+    @Override
+    public Locale javaClass(Locale locale) {
+        return null;
+    }
+
+    @Override
+    public Locale javaClasses(String name, String code, Locale locale) {
         return null;
     }
 }

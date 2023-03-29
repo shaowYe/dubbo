@@ -24,6 +24,8 @@ import org.apache.dubbo.config.utils.ReferenceConfigCache;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.rpc.service.GenericService;
 
+import java.util.Locale;
+
 public class Application {
     public static void main(String[] args) {
         if (isClassic(args)) {
@@ -49,8 +51,9 @@ public class Application {
                 .start();
 
         DemoService demoService = ReferenceConfigCache.getCache().get(reference);
-        String message = demoService.sayHello("dubbo");
-        System.out.println(message);
+//        String message = demoService.sayHello("dubbo");
+        Locale locale = demoService.javaClass(new Locale("chs", "China"));
+        System.out.println(locale.getCountry());
 
         // generic invoke
         GenericService genericService = (GenericService) demoService;

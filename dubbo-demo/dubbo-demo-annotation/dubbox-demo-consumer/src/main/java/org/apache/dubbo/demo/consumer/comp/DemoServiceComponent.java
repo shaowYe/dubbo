@@ -28,6 +28,8 @@ import uyun.pacific.api.query.QueryResult;
 import uyun.pacific.resource.api.entity.object.ResObject;
 import uyun.pacific.resource.api.service.ResObjectService;
 
+import java.util.Locale;
+
 @Component("demoServiceComponent")
 public class DemoServiceComponent {
     @Reference(check = false)
@@ -36,8 +38,6 @@ public class DemoServiceComponent {
     @Reference(check = false)
     private GreetingService greetingService;
 
-    @Reference
-    private ResObjectService resObjectService;
 
     public String sayHello(String name) {
         RpcContext.getContext().setAttachment("okr", "uyun-okr-sayhello");
@@ -54,22 +54,14 @@ public class DemoServiceComponent {
         return demoService.error(error);
     }
 
-    public String res(){
-        RpcContext.getContext().setAttachment("okr", "uyun-okr-res");
+    public String javaClass(){
 
-        QueryBuilder<ResObject> queryBuilder =  QueryParams.builder();
+        Locale locale = demoService.javaClass(new Locale("jp", "Japan"));
+        Locale locale1 = demoService.javaClasses("李二", "cc", new Locale("kr", "koran"));
+        return locale1.getCountry();
 
-
-//        queryBuilder.addParam(field, value);
-        String tenantId = "e10adc3949ba59abbe56e057f20f88dd";
-        queryBuilder.withPaging(1, 1);
-        queryBuilder.addParam("outerObjectId", QueryOperator.IS_NULL);
-        uyun.pacific.api.query.QueryParams<uyun.pacific.resource.api.entity.object.ResObject> params = queryBuilder.end();
-        params.setReturnTextValue(true);
-        QueryResult<ResObject> resObjects = resObjectService.queryResObjects(tenantId, params, null);
-
-        return resObjects.getCursorId();
-
-//        return demoService.error(error);
     }
+
+
+
 }

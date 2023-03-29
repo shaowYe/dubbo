@@ -19,6 +19,7 @@ package org.apache.dubbo.demo;
 import org.apache.dubbo.demo.bean.ComplicatedReq;
 import org.apache.dubbo.demo.bean.ComplicatedResp;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public interface DemoService {
@@ -33,4 +34,8 @@ public interface DemoService {
 
     ComplicatedResp queryComplicated(ComplicatedReq complicatedReq);
 
+
+    Locale javaClass(Locale locale);
+
+    Locale javaClasses(String name,String code,Locale locale);
 }

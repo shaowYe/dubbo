@@ -34,14 +34,11 @@ public class TestController {
     }
 
 
-    @GetMapping("/res")
+    @GetMapping("/class")
     @ResponseBody
-    public String res() {
-        String em = "";
+    public String javaClass() {
 
-        demoServiceComponent.res();
-
-        return em;
+        return demoServiceComponent.javaClass();
 
     }
 

@@ -24,6 +24,7 @@ import org.apache.dubbo.rpc.RpcContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 public class DemoServiceImpl implements DemoService {
@@ -49,6 +50,21 @@ public class DemoServiceImpl implements DemoService {
     @Override
     public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
         return null;
+    }
+
+    @Override
+    public Locale javaClass(Locale locale) {
+        String language = locale.getLanguage();
+        logger.info("language " + language + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
+        return new Locale("eng","America");
+    }
+
+    @Override
+    public Locale javaClasses(String name, String code, Locale locale) {
+        logger.info("name:" + name);
+        logger.info("code:" + code);
+        logger.info("language " + locale.getLanguage() + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
+        return new Locale("eng","America");
     }
 
 }

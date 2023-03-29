@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @DubboService
@@ -66,6 +67,16 @@ public class DemoServiceImpl implements DemoService {
         stringList.add("000");
         complicatedResp.setStringList(stringList);
         return complicatedResp;
+    }
+
+    @Override
+    public Locale javaClass(Locale locale) {
+        return new Locale("EN","England");
+    }
+
+    @Override
+    public Locale javaClasses(String name, String code, Locale locale) {
+        return new Locale("EN","England");
     }
 
 }

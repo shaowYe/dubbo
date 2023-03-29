@@ -25,6 +25,7 @@ import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -54,5 +55,15 @@ public class DemoServiceImpl implements DemoService {
     @Override
     public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
         return null;
+    }
+
+    @Override
+    public Locale javaClass(Locale locale) {
+        return new Locale("EN","England");
+    }
+
+    @Override
+    public Locale javaClasses(String name, String code, Locale locale) {
+        return new Locale("EN2","England2");
     }
 }

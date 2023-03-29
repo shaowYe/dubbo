@@ -39,6 +39,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>uyun.ant</groupId>
+                <artifactId>ant-lss-inside-operation-api</artifactId>
+                <version>18.38.0</version>
+            </dependency>
+
+
+
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${spring_version}</version>

@@ -22,6 +22,14 @@ import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.demo.GreetingService;
 import org.apache.dubbo.rpc.RpcContext;
 import org.springframework.stereotype.Component;
+import uyun.ant.inside.lss.operation.entity.AgentDetailDto;
+import uyun.ant.inside.lss.operation.entity.ClusterWorkNodeUpstreamDto;
+import uyun.ant.inside.lss.operation.service.AgentOperationService;
+import uyun.ant.inside.lss.operation.service.SupervisorClusterService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @Component("demoServiceComponent")
 public class DemoServiceComponent {
@@ -39,6 +47,11 @@ public class DemoServiceComponent {
     public String greet() {
         RpcContext.getContext().setAttachment("okr", "uyun-okr-greet");
         return greetingService.hello();
+    }
+    public String classes(){
+        Locale locale = demoService.javaClass(new Locale("ru", "russian"));
+        Locale locale2 = demoService.javaClasses("张三","coda2",new Locale("ru", "russian"));
+        return  locale.getCountry()+ ":" + locale2.getCountry();
     }
     
 

@@ -34,8 +34,10 @@ public class DubboConsumerApplication {
         context.start();
         DemoServiceComponent service = context.getBean("demoServiceComponent", DemoServiceComponent.class);
         String hello = service.sayHello("Uyun");
-        System.out.println("result :" + hello);
-        System.out.println(service.greet());
+        System.out.println(hello);
+
+        String classes = service.classes();
+        System.out.println(classes);
 
 
     }
