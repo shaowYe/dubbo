@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.apache.dubbo.common.constants.CommonConstants.*;
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_ExceptionProcess;
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeInvocationArgument;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DECODE_IN_IO_THREAD_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DEFAULT_DECODE_IN_IO_THREAD;
@@ -204,7 +204,7 @@ public class DubboCodec extends ExchangeCodec {
         out.writeUTF(serviceName);
         out.writeUTF(inv.getAttachment(VERSION_KEY));
 
-        out.writeUTF(inv.getMethodName());
+            out.writeUTF(inv.getMethodName());
 
         out.writeUTF(inv.getParameterTypesDesc());
         Object[] args = inv.getArguments();
@@ -217,29 +217,36 @@ public class DubboCodec extends ExchangeCodec {
     }
 
     protected void encodeRequestDataForDubbox(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
-        RpcInvocation inv = (RpcInvocation) data;
+        //增加dubboX标记
+        DUBBOX_FLAG.set(true);
+        try {
+            RpcInvocation inv = (RpcInvocation) data;
 
-        out.writeUTF(version);
-        String serviceName = inv.getAttachment(INTERFACE_KEY);
-        if (serviceName == null) {
-            serviceName = inv.getAttachment(PATH_KEY);
-        }
-        out.writeUTF(serviceName);
-        out.writeUTF(inv.getAttachment(VERSION_KEY));
-
-        out.writeUTF(inv.getMethodName());
-
-        // NOTICE modified by lishen
-        // TODO
-        out.writeInt(-1);
-        out.writeUTF(ReflectUtils.getDesc(inv.getParameterTypes()));
-
-        Object[] args = inv.getArguments();
-        if (args != null)
-            for (int i = 0; i < args.length; i++) {
-                out.writeObject(encodeInvocationArgument(channel, inv, i));
+            out.writeUTF(version);
+            String serviceName = inv.getAttachment(INTERFACE_KEY);
+            if (serviceName == null) {
+                serviceName = inv.getAttachment(PATH_KEY);
             }
-        out.writeObject(inv.getAttachments());
+            out.writeUTF(serviceName);
+            out.writeUTF(inv.getAttachment(VERSION_KEY));
+
+            out.writeUTF(inv.getMethodName());
+
+            // NOTICE modified by lishen
+            // TODO
+            out.writeInt(-1);
+            out.writeUTF(ReflectUtils.getDesc(inv.getParameterTypes()));
+
+            Object[] args = inv.getArguments();
+            if (args != null)
+                for (int i = 0; i < args.length; i++) {
+                    out.writeObject(encodeInvocationArgument(channel, inv, i));
+                }
+            out.writeObject(inv.getAttachments());
+        } finally {
+            //移除dubboX标记
+            DUBBOX_FLAG.remove();
+        }
     }
 
     @Override
@@ -257,18 +264,8 @@ public class DubboCodec extends ExchangeCodec {
                 out.writeObject(ret);
             }
         } else {
-            try {
-                log.info("consumer version :" + version);
-                if (DubboXUtils.checkDubboX(version)) {
-                    DUBBOX_ExceptionProcess.set(true);
-                }
-                out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
-                out.writeThrowable(th);
-            } finally {
-                if (DubboXUtils.checkDubboX(version)) {
-                    DUBBOX_ExceptionProcess.remove();
-                }
-            }
+            out.writeByte(attach ? RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS : RESPONSE_WITH_EXCEPTION);
+            out.writeThrowable(th);
         }
 
         if (attach) {

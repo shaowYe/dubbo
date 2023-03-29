@@ -45,6 +45,7 @@ import java.util.Map;
 
 import static org.apache.dubbo.common.URL.buildKey;
 import static org.apache.dubbo.common.constants.CommonConstants.*;
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.decodeInvocationArgument;
@@ -199,6 +200,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
     protected void decodeForDubbox(Channel channel, ObjectInput in) throws IOException {
         try {
+            //设置dubboX标记
+            DUBBOX_FLAG.set(true);
             Object[] args;
             Class<?>[] pts;
 
@@ -273,6 +276,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
+        }finally {
+            DUBBOX_FLAG.remove();
         }
     }
 }

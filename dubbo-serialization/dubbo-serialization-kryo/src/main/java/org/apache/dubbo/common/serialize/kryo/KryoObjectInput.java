@@ -16,17 +16,18 @@
  */
 package org.apache.dubbo.common.serialize.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
+import com.esotericsoftware.kryo.io.Input;
 import org.apache.dubbo.common.serialize.Cleanable;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.KryoException;
-import com.esotericsoftware.kryo.io.Input;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 
 /**
  * Kryo object input implementation, kryo object can be clean
@@ -132,18 +133,11 @@ public class KryoObjectInput implements ObjectInput, Cleanable {
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
         // TODO optimization
-        int position = input.position();
-
-        try {
+        if (DUBBOX_FLAG.get() != null && DUBBOX_FLAG.get()) {
+            Kryo dubboxKryo = KryoUtils.getX();
+            return dubboxKryo.readClassAndObject(input);
+        } else {
             return kryo.readClassAndObject(input);
-        } catch (KryoException e) {
-            input.setPosition(position);
-            try {
-                Kryo dubboxKryo = DubboxCompatibleKryo.createDubboxKryo();
-                return  dubboxKryo.readClassAndObject(input);
-            } catch (Exception var) {
-                throw new IOException(e);
-            }
         }
     }
 

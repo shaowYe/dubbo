@@ -26,8 +26,14 @@ import com.esotericsoftware.kryo.Kryo;
 public class KryoUtils {
     private static AbstractKryoFactory kryoFactory = new ThreadLocalKryoFactory();
 
+    private static DubboxKryoFactory dubboXKryoFactory = new DubboxKryoFactory();
+
     public static Kryo get() {
         return kryoFactory.getKryo();
+    }
+
+    public static Kryo getX() {
+        return dubboXKryoFactory.getKryo();
     }
 
     public static void release(Kryo kryo) {

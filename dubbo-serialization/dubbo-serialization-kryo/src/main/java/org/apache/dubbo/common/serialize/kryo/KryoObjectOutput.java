@@ -16,17 +16,16 @@
  */
 package org.apache.dubbo.common.serialize.kryo;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 import org.apache.dubbo.common.serialize.Cleanable;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_ExceptionProcess;
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 
 /**
  * Kryo object output implementation, kryo object can be clean
@@ -104,13 +103,18 @@ public class KryoObjectOutput implements ObjectOutput, Cleanable {
     @Override
     public void writeObject(Object v) throws IOException {
         // TODO carries class info every time.
-        kryo.writeClassAndObject(output, v);
+        if (DUBBOX_FLAG.get() != null && DUBBOX_FLAG.get()) {
+            Kryo dubboxKryo = KryoUtils.getX();
+            dubboxKryo.writeClassAndObject(output, v);
+        } else {
+            kryo.writeClassAndObject(output, v);
+        }
     }
 
     @Override
     public void writeThrowable(Object v) throws IOException {
-        if (DUBBOX_ExceptionProcess.get() != null && DUBBOX_ExceptionProcess.get()) {
-            Kryo dubboxKryo = DubboxCompatibleKryo.createDubboxKryo();
+        if (DUBBOX_FLAG.get() != null && DUBBOX_FLAG.get()) {
+            Kryo dubboxKryo = KryoUtils.getX();
             dubboxKryo.writeClassAndObject(output, v);
         } else {
             kryo.writeClassAndObject(output, v);
