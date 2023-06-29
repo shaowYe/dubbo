@@ -1,13 +1,8 @@
-package org.apache.dubbo.remoting.utils;
+package org.apache.dubbo.common.serialize.kryo.utils;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;
-import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.common.utils.StringUtils;
-import org.apache.dubbo.remoting.Constants;
-
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 
 /**
  * @author ysw
@@ -53,12 +48,4 @@ public class DubboXUtils {
         return false;
     }
 
-
-    public static Serialization DubboXSerialization(URL url) {
-        String parameter = url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION);
-        if (DUBBOX_FLAG.get() != null && DUBBOX_FLAG.get() && Constants.KRYO_SERIALIZATION.equals(parameter)) {
-            parameter = Constants.KRYO2_SERIALIZATION;
-        }
-        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(parameter);
-    }
 }

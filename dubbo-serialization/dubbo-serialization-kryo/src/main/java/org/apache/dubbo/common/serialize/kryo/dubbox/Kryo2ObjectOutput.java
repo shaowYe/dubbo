@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.kryo;
+package org.apache.dubbo.common.serialize.kryo.dubbox;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo2.io.Output;
 import org.apache.dubbo.common.serialize.Cleanable;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
@@ -25,18 +25,17 @@ import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
 /**
  * Kryo object output implementation, kryo object can be clean
  */
-public class KryoObjectOutput implements ObjectOutput, Cleanable {
+public class Kryo2ObjectOutput implements ObjectOutput, Cleanable {
 
     private Output output;
     private Kryo kryo;
 
-    public KryoObjectOutput(OutputStream outputStream) {
+    public Kryo2ObjectOutput(OutputStream outputStream) {
         output = new Output(outputStream);
-        this.kryo = KryoUtils.get();
+        this.kryo = KryoUtils.getX();
     }
 
     @Override
@@ -108,6 +107,7 @@ public class KryoObjectOutput implements ObjectOutput, Cleanable {
     @Override
     public void writeThrowable(Object v) throws IOException {
         kryo.writeClassAndObject(output, v);
+
     }
 
     @Override

@@ -14,11 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.kryo;
+package org.apache.dubbo.common.serialize.kryo.dubbox;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.KryoException;
-import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo2.KryoException;
+import com.esotericsoftware.kryo2.io.Input;
 import org.apache.dubbo.common.serialize.Cleanable;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
@@ -27,32 +27,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 
+
 /**
  * Kryo object input implementation, kryo object can be clean
  */
-public class KryoObjectInput implements ObjectInput, Cleanable {
+public class Kryo2ObjectInput implements ObjectInput, Cleanable {
 
     private Kryo kryo;
     private Input input;
 
-    public KryoObjectInput(InputStream inputStream) {
+    public Kryo2ObjectInput(InputStream inputStream) {
         input = new Input(inputStream);
-        this.kryo = KryoUtils.get();
+        this.kryo = KryoUtils.getX();
     }
-
-    public Input getInput() {
-        return input;
-    }
-
-
-    public int getPosition() {
-        return input.position();
-    }
-
-    public void setPosition(int p){
-        input.setPosition(p);
-    }
-
 
     @Override
     public boolean readBool() throws IOException {
@@ -145,7 +132,9 @@ public class KryoObjectInput implements ObjectInput, Cleanable {
     @Override
     public Object readObject() throws IOException, ClassNotFoundException {
         // TODO optimization
-        return kryo.readClassAndObject(input);
+
+            return kryo.readClassAndObject(input);
+
     }
 
 

@@ -21,8 +21,10 @@ import org.apache.dubbo.common.extension.ExtensionLoader;
 import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.remoting.Constants;
 import org.apache.dubbo.remoting.transport.CodecSupport;
+import org.apache.dubbo.remoting.utils.DubboXUtils;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.Invocation;
+
 
 import static org.apache.dubbo.rpc.Constants.INVOCATION_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
@@ -34,11 +36,12 @@ public class DubboCodecSupport {
         if (serializationTypeObj != null) {
             return CodecSupport.getSerializationById((byte) serializationTypeObj);
         }
-        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(
-                url.getParameter(org.apache.dubbo.remoting.Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION));
+//        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(
+//                url.getParameter(org.apache.dubbo.remoting.Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION));
+        return DubboXUtils.DubboXSerialization(url);
     }
 
-    public static Serialization getResponseSerialization(URL url, AppResponse appResponse) {
+    public static Serialization getResponseSerialization(URL url, AppResponse appResponse ) {
         Object invocationObj = appResponse.getAttribute(INVOCATION_KEY);
         if (invocationObj != null) {
             Invocation invocation = (Invocation) invocationObj;
@@ -47,7 +50,8 @@ public class DubboCodecSupport {
                 return CodecSupport.getSerializationById((byte) serializationTypeObj);
             }
         }
-        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(
-                url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION));
+//        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(
+//                url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION));
+        return DubboXUtils.DubboXSerialization(url);
     }
 }

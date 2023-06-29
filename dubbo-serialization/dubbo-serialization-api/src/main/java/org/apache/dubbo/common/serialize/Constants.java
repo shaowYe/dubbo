@@ -24,6 +24,10 @@ public interface Constants {
     byte FASTJSON_SERIALIZATION_ID = 6;
     byte NATIVE_JAVA_SERIALIZATION_ID = 7;
     byte KRYO_SERIALIZATION_ID = 8;
+    /**
+     * DubboX kryo V2 版本兼容
+     */
+    byte KRYO2_SERIALIZATION_ID = 88;
     byte FST_SERIALIZATION_ID = 9;
     byte NATIVE_HESSIAN_SERIALIZATION_ID = 10;
     byte PROTOSTUFF_SERIALIZATION_ID = 12;

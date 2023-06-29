@@ -26,6 +26,7 @@ import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.remoting.Constants;
+import org.apache.dubbo.remoting.utils.DubboXUtils;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ProviderModel;
 import org.apache.dubbo.rpc.model.ServiceRepository;
@@ -33,11 +34,11 @@ import org.apache.dubbo.rpc.model.ServiceRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static org.apache.dubbo.common.serialize.Constants.KRYO2_SERIALIZATION_ID;
+import static org.apache.dubbo.common.serialize.Constants.KRYO_SERIALIZATION_ID;
+import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
 
 public class CodecSupport {
     private static final Logger logger = LoggerFactory.getLogger(CodecSupport.class);
@@ -71,6 +72,10 @@ public class CodecSupport {
     }
 
     public static Serialization getSerializationById(Byte id) {
+        if (DUBBOX_FLAG.get() != null && DUBBOX_FLAG.get() && KRYO_SERIALIZATION_ID == id) {
+            //判断是 dubboX 同时是 kryo的 使用 kryo2 序列化
+            return ID_SERIALIZATION_MAP.get(KRYO2_SERIALIZATION_ID);
+        }
         return ID_SERIALIZATION_MAP.get(id);
     }
 
@@ -79,8 +84,7 @@ public class CodecSupport {
     }
 
     public static Serialization getSerialization(URL url) {
-        return ExtensionLoader.getExtensionLoader(Serialization.class).getExtension(
-                url.getParameter(Constants.SERIALIZATION_KEY, Constants.DEFAULT_REMOTING_SERIALIZATION));
+        return DubboXUtils.DubboXSerialization(url);
     }
 
     public static Serialization getSerialization(URL url, Byte id) throws IOException {

@@ -14,20 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.kryo;
+package org.apache.dubbo.common.serialize.kryo.dubbox;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.Serialization;
-import org.apache.dubbo.common.serialize.kryo.dubbox.Kryo2ObjectInput;
-import org.apache.dubbo.common.serialize.kryo.utils.DubboXUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import static org.apache.dubbo.common.serialize.Constants.KRYO_SERIALIZATION_ID;
+import static org.apache.dubbo.common.serialize.Constants.KRYO2_SERIALIZATION_ID;
 
 /**
  * TODO for now kryo serialization doesn't deny classes that don't implement the serializable interface
@@ -36,11 +34,11 @@ import static org.apache.dubbo.common.serialize.Constants.KRYO_SERIALIZATION_ID;
  *     e.g. &lt;dubbo:protocol serialization="kryo" /&gt;
  * </pre>
  */
-public class KryoSerialization implements Serialization {
+public class Kryo2Serialization implements Serialization {
 
     @Override
     public byte getContentTypeId() {
-        return KRYO_SERIALIZATION_ID;
+        return KRYO2_SERIALIZATION_ID;
     }
 
     @Override
@@ -50,20 +48,11 @@ public class KryoSerialization implements Serialization {
 
     @Override
     public ObjectOutput serialize(URL url, OutputStream out) throws IOException {
-        return new KryoObjectOutput(out);
+        return new Kryo2ObjectOutput(out);
     }
 
     @Override
     public ObjectInput deserialize(URL url, InputStream is) throws IOException {
-        KryoObjectInput kryoObjectInput = new KryoObjectInput(is);
-        Kryo2ObjectInput kryo2ObjectInput = new Kryo2ObjectInput(kryoObjectInput.getInput());
-        int position = kryoObjectInput.getPosition();
-        String dubboVersion= kryoObjectInput.readUTF();
-        kryoObjectInput.setPosition(position);
-        if (DubboXUtils.checkDubboX(dubboVersion)) {
-            //是 dubboX 返回 kryo2
-           return kryo2ObjectInput;
-        }
-        return kryoObjectInput;
+        return new Kryo2ObjectInput(is);
     }
 }

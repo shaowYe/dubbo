@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.dubbo.common.serialize.kryo;
+package org.apache.dubbo.common.serialize.kryo.dubbox;
 
-import com.esotericsoftware.kryo.DefaultSerializer;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.Serializer;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers.EnumSerializer;
-import com.esotericsoftware.kryo.serializers.JavaSerializer;
-import de.javakaffee.kryoserializers.*;
+import com.esotericsoftware.kryo2.DefaultSerializer;
+import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo2.Serializer;
+import com.esotericsoftware.kryo2.serializers.DefaultSerializers.EnumSerializer;
+import com.esotericsoftware.kryo2.serializers.JavaSerializer;
+import de.javakaffee.kryo2serializers.*;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.utils.ReflectUtils;
 
-import java.lang.reflect.InvocationHandler;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
  * @author lishen

@@ -1,10 +1,8 @@
-package org.apache.dubbo.common.serialize.kryo.utils;
+package org.apache.dubbo.common.serialize.kryo.dubbox;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.pool.KryoFactory;
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
-import de.javakaffee.kryoserializers.*;
-import org.apache.dubbo.common.serialize.kryo.DubboxCompatibleKryo;
+import com.esotericsoftware.kryo2.Kryo;
+import com.esotericsoftware.kryo2.serializers.DefaultSerializers;
+import de.javakaffee.kryo2serializers.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.math.BigDecimal;
@@ -21,7 +19,7 @@ import java.util.regex.Pattern;
  * @author ysw
  * @date 2023/3/28 13:51
  */
-public class DubboxKryoFactory implements KryoFactory {
+public class DubboxKryoFactory   {
     private final Set<Class> registrations = new LinkedHashSet<Class>();
 
 //    private boolean registrationRequired;
@@ -49,13 +47,14 @@ public class DubboxKryoFactory implements KryoFactory {
         registrations.add(clazz);
     }
 
-    @Override
+
     public Kryo create() {
         if (!kryoCreated) {
             kryoCreated = true;
         }
 
         Kryo kryo = new DubboxCompatibleKryo();
+        kryo.setRegistrationRequired(false);
 
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         kryo.register(GregorianCalendar.class, new GregorianCalendarSerializer());
@@ -71,7 +70,7 @@ public class DubboxKryoFactory implements KryoFactory {
 
 
 
-        
+
         // now just added some very common classes
         // TODO optimization
         kryo.register(HashMap.class);

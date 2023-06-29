@@ -282,6 +282,9 @@ public class ExchangeCodec extends TelnetCodec {
     protected void encodeResponse(Channel channel, ChannelBuffer buffer, Response res) throws IOException {
         int savedWriteIndex = buffer.writerIndex();
         try {
+            if (DubboXUtils.checkDubboX(res.getVersion())) {
+                DUBBOX_FLAG.set(true);
+            }
             Serialization serialization = getSerialization(channel, res);
             // header.
             byte[] header = new byte[HEADER_LENGTH];
@@ -312,9 +315,7 @@ public class ExchangeCodec extends TelnetCodec {
                         encodeEventData(channel, out, res.getResult());
                     } else {
                         //设置dubbo 版本号的threadlocal标记
-                        if (DubboXUtils.checkDubboX(res.getVersion())) {
-                            DUBBOX_FLAG.set(true);
-                        }
+
                         encodeResponseData(channel, out, res.getResult(), res.getVersion());
                     }
                     out.flushBuffer();

@@ -37,6 +37,16 @@ limitations under the License.
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
+            <groupId>de.javakaffee</groupId>
+            <artifactId>kryo2-serializers</artifactId>
+            <version>0.26</version>
+        </dependency>
+        <dependency>
+            <groupId>com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo2</artifactId>
+            <version>2.24.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
         </dependency>

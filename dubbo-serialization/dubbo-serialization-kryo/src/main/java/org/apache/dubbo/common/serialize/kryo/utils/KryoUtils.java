@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.serialize.kryo.utils;
 
 import com.esotericsoftware.kryo.Kryo;
+import org.apache.dubbo.common.serialize.kryo.dubbox.DubboxKryoFactory;
 
 /**
  * The kryo utils used by dubbo
@@ -32,13 +33,18 @@ public class KryoUtils {
         return kryoFactory.getKryo();
     }
 
-    public static Kryo getX() {
+    public static com.esotericsoftware.kryo2.Kryo getX() {
         return dubboXKryoFactory.getKryo();
     }
 
     public static void release(Kryo kryo) {
         kryoFactory.returnKryo(kryo);
     }
+
+    public static void release(com.esotericsoftware.kryo2.Kryo kryo) {
+        dubboXKryoFactory.returnKryo(kryo);
+    }
+
 
     public static void register(Class<?> clazz) {
         kryoFactory.registerClass(clazz);
