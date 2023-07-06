@@ -39,4 +39,9 @@ public interface Serialization extends org.apache.dubbo.common.serialize.Seriali
     default org.apache.dubbo.common.serialize.ObjectInput deserialize(org.apache.dubbo.common.URL url, InputStream input) throws IOException {
         return this.deserialize(new URL(url), input);
     }
+
+    @Override
+    default org.apache.dubbo.common.serialize.ObjectInput deserializeDubboX(org.apache.dubbo.common.URL url, InputStream input) throws IOException {
+        return this.deserialize(new URL(url), input);
+    }
 }

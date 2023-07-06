@@ -94,12 +94,12 @@ public class DubboCodec extends ExchangeCodec {
                         DecodeableRpcResult result;
                         if (channel.getUrl().getParameter(DECODE_IN_IO_THREAD_KEY, DEFAULT_DECODE_IN_IO_THREAD)) {
                             result = new DecodeableRpcResult(channel, res, is,
-                                    (Invocation) getRequestData(id), proto);
+                                (Invocation) getRequestData(id), proto);
                             result.decode();
                         } else {
                             result = new DecodeableRpcResult(channel, res,
-                                    new UnsafeByteArrayInputStream(readMessageData(is)),
-                                    (Invocation) getRequestData(id), proto);
+                                new UnsafeByteArrayInputStream(readMessageData(is)),
+                                (Invocation) getRequestData(id), proto);
                         }
                         data = result;
                     }
@@ -142,7 +142,7 @@ public class DubboCodec extends ExchangeCodec {
                         inv.decode();
                     } else {
                         inv = new DecodeableRpcInvocation(channel, req,
-                                new UnsafeByteArrayInputStream(readMessageData(is)), proto);
+                            new UnsafeByteArrayInputStream(readMessageData(is)), proto);
                     }
                     data = inv;
                 }
@@ -180,6 +180,12 @@ public class DubboCodec extends ExchangeCodec {
     }
 
     @Override
+    protected boolean isDubboX(Object data) {
+        RpcInvocation inv = (RpcInvocation) data;
+        return DubboXUtils.checkDubboXURL(inv.getInvoker().getUrl());
+    }
+
+    @Override
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
 
@@ -190,7 +196,11 @@ public class DubboCodec extends ExchangeCodec {
         //判断是不是dubboX
 
         log.info("provider version: " + remoteDubboVersion);
-        if (DubboXUtils.checkDubboXURL(inv.getInvoker().getUrl())) {
+//        if (DubboXUtils.checkDubboXURL(inv.getInvoker().getUrl())) {
+//            encodeRequestDataForDubbox(channel, out, data, version);
+//            return;
+//        }
+        if (DUBBOX_FLAG.get()!= null && DUBBOX_FLAG.get()){
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
         }
@@ -204,7 +214,7 @@ public class DubboCodec extends ExchangeCodec {
         out.writeUTF(serviceName);
         out.writeUTF(inv.getAttachment(VERSION_KEY));
 
-            out.writeUTF(inv.getMethodName());
+        out.writeUTF(inv.getMethodName());
 
         out.writeUTF(inv.getParameterTypesDesc());
         Object[] args = inv.getArguments();
@@ -217,8 +227,6 @@ public class DubboCodec extends ExchangeCodec {
     }
 
     protected void encodeRequestDataForDubbox(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
-        //增加dubboX标记
-        DUBBOX_FLAG.set(true);
         try {
             RpcInvocation inv = (RpcInvocation) data;
 
@@ -245,7 +253,7 @@ public class DubboCodec extends ExchangeCodec {
             out.writeObject(inv.getAttachments());
         } finally {
             //移除dubboX标记
-            DUBBOX_FLAG.remove();
+//            DUBBOX_FLAG.remove();
         }
     }
 

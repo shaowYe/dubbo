@@ -55,4 +55,9 @@ public class ProtostuffSerialization implements Serialization {
     public ObjectInput deserialize(URL url, InputStream input) throws IOException {
         return new ProtostuffObjectInput(input);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new ProtostuffObjectInput(input);
+    }
 }

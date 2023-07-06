@@ -49,4 +49,9 @@ public class AvroSerialization implements Serialization {
         return new AvroObjectInput(input);
     }
 
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new AvroObjectInput(input);
+    }
+
 }

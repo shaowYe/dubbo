@@ -21,6 +21,7 @@ import org.apache.dubbo.common.serialize.ObjectInput;
 import org.apache.dubbo.common.serialize.ObjectOutput;
 import org.apache.dubbo.common.serialize.Serialization;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -49,6 +50,11 @@ public class GenericProtobufJsonSerialization implements Serialization {
 
     @Override
     public ObjectInput deserialize(URL url, InputStream input) {
+        return new GenericProtobufJsonObjectInput(input);
+    }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
         return new GenericProtobufJsonObjectInput(input);
     }
 }

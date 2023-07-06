@@ -55,4 +55,9 @@ public class FstSerialization implements Serialization {
     public ObjectInput deserialize(URL url, InputStream is) throws IOException {
         return new FstObjectInput(is);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream is) throws IOException {
+        return new FstObjectInput(is);
+    }
 }

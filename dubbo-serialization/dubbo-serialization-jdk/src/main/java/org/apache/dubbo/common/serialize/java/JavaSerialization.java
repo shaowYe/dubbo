@@ -56,4 +56,9 @@ public class JavaSerialization implements Serialization {
         return new JavaObjectInput(is);
     }
 
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new JavaObjectInput(input);
+    }
+
 }

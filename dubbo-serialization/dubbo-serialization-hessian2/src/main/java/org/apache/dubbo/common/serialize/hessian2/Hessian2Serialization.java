@@ -56,4 +56,9 @@ public class Hessian2Serialization implements Serialization {
         return new Hessian2ObjectInput(is);
     }
 
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new Hessian2ObjectInput(input);
+    }
+
 }

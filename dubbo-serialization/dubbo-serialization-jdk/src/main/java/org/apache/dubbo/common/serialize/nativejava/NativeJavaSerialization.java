@@ -57,4 +57,9 @@ public class NativeJavaSerialization implements Serialization {
     public ObjectInput deserialize(URL url, InputStream input) throws IOException {
         return new NativeJavaObjectInput(input);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new NativeJavaObjectInput(input);
+    }
 }

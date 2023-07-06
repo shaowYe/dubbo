@@ -56,4 +56,9 @@ public class FastJsonSerialization implements Serialization {
         return new FastJsonObjectInput(input);
     }
 
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new FastJsonObjectInput(input);
+    }
+
 }

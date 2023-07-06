@@ -37,7 +37,7 @@ public interface Serialization {
 
     /**
      * Get content type unique id, recommended that custom implementations use values different with
-     * any value of {@link Constants} and don't greater than ExchangeCodec.SERIALIZATION_MASK (31) 
+     * any value of {@link Constants} and don't greater than ExchangeCodec.SERIALIZATION_MASK (31)
      * because dubbo protocol use 5 bits to record serialization ID in header.
      *
      * @return content type id
@@ -72,5 +72,13 @@ public interface Serialization {
      */
     @Adaptive
     ObjectInput deserialize(URL url, InputStream input) throws IOException;
+
+    /**
+     * @param input
+     * @return
+     * @throws IOException
+     */
+    @Adaptive
+    ObjectInput deserializeDubboX(URL url, InputStream input) throws IOException;
 
 }

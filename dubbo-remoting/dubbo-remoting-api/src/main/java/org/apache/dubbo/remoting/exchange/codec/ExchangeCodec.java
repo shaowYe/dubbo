@@ -227,6 +227,10 @@ public class ExchangeCodec extends TelnetCodec {
     }
 
     protected void encodeRequest(Channel channel, ChannelBuffer buffer, Request req) throws IOException {
+        //判断是否是 dubboX
+        if (!req.isHeartbeat() && !req.isEvent() && isDubboX(req.getData())) {
+            DUBBOX_FLAG.set(true);
+        }
         Serialization serialization = getSerialization(channel, req);
         // header.
         byte[] header = new byte[HEADER_LENGTH];
@@ -306,10 +310,10 @@ public class ExchangeCodec extends TelnetCodec {
 
             // encode response data or error message.
             if (status == Response.OK) {
-                if(res.isHeartbeat()){
+                if (res.isHeartbeat()) {
                     // heartbeat response data is always null
                     bos.write(CodecSupport.getNullBytesOf(serialization));
-                }else {
+                } else {
                     ObjectOutput out = serialization.serialize(channel.getUrl(), bos);
                     if (res.isEvent()) {
                         encodeEventData(channel, out, res.getResult());
@@ -383,7 +387,7 @@ public class ExchangeCodec extends TelnetCodec {
                 throw new RuntimeException(t.getMessage(), t);
             }
         } finally {
-            DUBBOX_FLAG.remove();
+//            DUBBOX_FLAG.remove();
         }
     }
 
@@ -511,5 +515,16 @@ public class ExchangeCodec extends TelnetCodec {
             }
         }
         return null;
+    }
+
+    /**
+     * 判断是否是 dubboX
+     * 注意此方法只有 rpc dubbo 时才 有可能返回 true
+     *
+     * @param data
+     * @return
+     */
+    protected boolean isDubboX(Object data) {
+        return false;
     }
 }

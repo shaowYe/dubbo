@@ -102,8 +102,9 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
     @Override
     public Object decode(Channel channel, InputStream input) throws IOException {
+
         ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
-                .deserialize(channel.getUrl(), input);
+            .deserializeDubboX(channel.getUrl(), input);
         this.put(SERIALIZATION_ID_KEY, serializationType);
 
         String dubboVersion = in.readUTF();
@@ -185,8 +186,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
             setArguments(args);
             String targetServiceName = buildKey(getAttachment(PATH_KEY),
-                    getAttachment(GROUP_KEY),
-                    getAttachment(VERSION_KEY));
+                getAttachment(GROUP_KEY),
+                getAttachment(VERSION_KEY));
             setTargetServiceUniqueName(targetServiceName);
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
@@ -276,8 +277,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
-        }finally {
-            DUBBOX_FLAG.remove();
+        } finally {
+//            DUBBOX_FLAG.remove();
         }
     }
 }

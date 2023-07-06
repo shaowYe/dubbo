@@ -54,4 +54,9 @@ public class KryoSerialization2 implements Serialization {
     public ObjectInput deserialize(URL url, InputStream is) throws IOException {
         return new KryoObjectInput2(is);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new KryoObjectInput2(input);
+    }
 }

@@ -50,4 +50,9 @@ public class GsonSerialization implements Serialization {
     public ObjectInput deserialize(URL url, InputStream input) throws IOException {
         return new GsonJsonObjectInput(input);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new GsonJsonObjectInput(input);
+    }
 }

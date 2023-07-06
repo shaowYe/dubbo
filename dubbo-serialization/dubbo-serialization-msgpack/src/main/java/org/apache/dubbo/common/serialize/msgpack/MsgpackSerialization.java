@@ -50,4 +50,9 @@ public class MsgpackSerialization implements Serialization {
     public ObjectInput deserialize(URL url, InputStream input) throws IOException {
         return new MsgpackObjectInput(input);
     }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream input) throws IOException {
+        return new MsgpackObjectInput(input);
+    }
 }

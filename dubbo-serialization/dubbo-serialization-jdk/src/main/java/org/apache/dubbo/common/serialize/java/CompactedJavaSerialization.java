@@ -56,4 +56,9 @@ public class CompactedJavaSerialization implements Serialization {
         return new JavaObjectInput(is, true);
     }
 
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream is) throws IOException {
+        return new JavaObjectInput(is, true);
+    }
+
 }

@@ -55,6 +55,11 @@ public class KryoSerialization implements Serialization {
 
     @Override
     public ObjectInput deserialize(URL url, InputStream is) throws IOException {
+      return new KryoObjectInput(is);
+    }
+
+    @Override
+    public ObjectInput deserializeDubboX(URL url,InputStream is) throws IOException {
         KryoObjectInput kryoObjectInput = new KryoObjectInput(is);
         Kryo2ObjectInput kryo2ObjectInput = new Kryo2ObjectInput(kryoObjectInput.getInput());
         int position = kryoObjectInput.getPosition();
@@ -62,7 +67,7 @@ public class KryoSerialization implements Serialization {
         kryoObjectInput.setPosition(position);
         if (DubboXUtils.checkDubboX(dubboVersion)) {
             //是 dubboX 返回 kryo2
-           return kryo2ObjectInput;
+            return kryo2ObjectInput;
         }
         return kryoObjectInput;
     }
