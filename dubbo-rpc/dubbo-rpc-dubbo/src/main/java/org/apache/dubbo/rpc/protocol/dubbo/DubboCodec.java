@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.apache.dubbo.common.constants.CommonConstants.*;
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.utils.DubboXFlag.DUBBOX_FLAG;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeInvocationArgument;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DECODE_IN_IO_THREAD_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DEFAULT_DECODE_IN_IO_THREAD;
@@ -252,7 +252,7 @@ public class DubboCodec extends ExchangeCodec {
                 }
             out.writeObject(inv.getAttachments());
         } finally {
-            //移除dubboX标记
+//            移除dubboX标记
 //            DUBBOX_FLAG.remove();
         }
     }

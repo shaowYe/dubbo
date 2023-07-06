@@ -27,10 +27,6 @@ public abstract class SerializableClassRegistry {
 
 
     private static final Map<Class<?>, Object> REGISTRATIONS = new LinkedHashMap<>();
-    /**
-     * 标记是否是dubbox
-     */
-    public static final ThreadLocal<Boolean> DUBBOX_FLAG = new ThreadLocal<>();
 
     /**
      * only supposed to be called at startup time

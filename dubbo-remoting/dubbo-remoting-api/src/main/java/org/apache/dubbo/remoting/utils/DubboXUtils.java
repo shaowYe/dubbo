@@ -7,7 +7,7 @@ import org.apache.dubbo.common.serialize.Serialization;
 import org.apache.dubbo.common.utils.StringUtils;
 import org.apache.dubbo.remoting.Constants;
 
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.utils.DubboXFlag.DUBBOX_FLAG;
 
 /**
  * @author ysw

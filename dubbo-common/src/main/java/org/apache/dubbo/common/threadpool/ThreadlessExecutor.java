@@ -18,6 +18,7 @@ package org.apache.dubbo.common.threadpool;
 
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
+import org.apache.dubbo.common.utils.DubboXFlag;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import static org.apache.dubbo.common.utils.DubboXFlag.DUBBOX_FLAG;
 
 /**
  * The most important difference between this Executor and other normal Executor is that this one doesn't manage
@@ -185,17 +188,29 @@ public class ThreadlessExecutor extends AbstractExecutorService {
 
     private static class RunnableWrapper implements Runnable {
         private Runnable runnable;
+        private Boolean dubboXFlag;
 
         public RunnableWrapper(Runnable runnable) {
+            //获取当前线程的DubboX 标记
+            if (DUBBOX_FLAG.get() != null){
+                dubboXFlag = DUBBOX_FLAG.get();
+            }
             this.runnable = runnable;
         }
 
         @Override
         public void run() {
             try {
+                //塞到子线程的DubboX 标记中
+                if (dubboXFlag != null){
+                    DUBBOX_FLAG.set(dubboXFlag);
+                }
                 runnable.run();
             } catch (Throwable t) {
                 logger.info(t);
+            }finally {
+                //最终清空下DubboX 标记，防止线程池重复使用线程带来的ThreadLocal数据遗留问题
+                DUBBOX_FLAG.remove();
             }
         }
     }

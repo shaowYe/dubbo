@@ -44,8 +44,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
-
+import static org.apache.dubbo.common.utils.DubboXFlag.DUBBOX_FLAG;
 /**
  * ExchangeCodec.
  */
@@ -318,8 +317,6 @@ public class ExchangeCodec extends TelnetCodec {
                     if (res.isEvent()) {
                         encodeEventData(channel, out, res.getResult());
                     } else {
-                        //设置dubbo 版本号的threadlocal标记
-
                         encodeResponseData(channel, out, res.getResult(), res.getVersion());
                     }
                     out.flushBuffer();

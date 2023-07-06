@@ -38,7 +38,7 @@ import java.util.*;
 
 import static org.apache.dubbo.common.serialize.Constants.KRYO2_SERIALIZATION_ID;
 import static org.apache.dubbo.common.serialize.Constants.KRYO_SERIALIZATION_ID;
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.utils.DubboXFlag.DUBBOX_FLAG;
 
 public class CodecSupport {
     private static final Logger logger = LoggerFactory.getLogger(CodecSupport.class);
