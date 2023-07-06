@@ -36,9 +36,11 @@ public class DubboConsumerApplication {
         String hello = service.sayHello("Uyun");
         System.out.println(hello);
 
-        String classes = service.classes();
-        System.out.println(classes);
+        String m = service.login("nn","pp");
+        System.out.println(m);
 
+        String com = service.com();
+        System.out.println(com);
 
     }
 

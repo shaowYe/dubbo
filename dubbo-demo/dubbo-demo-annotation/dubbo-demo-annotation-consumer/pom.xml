@@ -101,6 +101,7 @@
             <groupId>org.apache.dubbo</groupId>
             <artifactId>dubbo-serialization-kryo</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

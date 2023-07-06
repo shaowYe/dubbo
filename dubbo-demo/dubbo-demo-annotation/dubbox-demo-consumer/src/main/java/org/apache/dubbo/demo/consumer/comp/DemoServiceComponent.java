@@ -20,13 +20,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.rpc.RpcContext;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.demo.GreetingService;
+import org.apache.dubbo.demo.bean.ComplicatedReq;
+import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.springframework.stereotype.Component;
-import uyun.pacific.api.query.QueryBuilder;
-import uyun.pacific.api.query.QueryOperator;
-import uyun.pacific.api.query.QueryParams;
-import uyun.pacific.api.query.QueryResult;
-import uyun.pacific.resource.api.entity.object.ResObject;
-import uyun.pacific.resource.api.service.ResObjectService;
 
 import java.util.Locale;
 
@@ -60,6 +56,12 @@ public class DemoServiceComponent {
         Locale locale1 = demoService.javaClasses("李二", "cc", new Locale("kr", "koran"));
         return locale1.getCountry();
 
+    }
+
+
+    public ComplicatedResp com (ComplicatedReq complicatedReq){
+            RpcContext.getContext().setAttachment("okr", "uyun-okr-error");
+            return demoService.queryComplicated(complicatedReq);
     }
 
 

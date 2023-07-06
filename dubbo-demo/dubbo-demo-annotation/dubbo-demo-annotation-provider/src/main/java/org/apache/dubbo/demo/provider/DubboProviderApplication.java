@@ -16,6 +16,7 @@
  */
 package org.apache.dubbo.demo.provider;
 
+import com.esotericsoftware.minlog.Log;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 
@@ -29,6 +30,7 @@ public class DubboProviderApplication {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ProviderConfiguration.class);
         context.start();
         System.in.read();
+
     }
 
     @Configuration

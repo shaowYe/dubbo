@@ -16,16 +16,17 @@
  */
 package org.apache.dubbo.demo.consumer.comp;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.demo.DemoService;
-
 import org.apache.dubbo.demo.GreetingService;
+import org.apache.dubbo.demo.bean.ComplicatedReq;
+import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.apache.dubbo.rpc.RpcContext;
 import org.springframework.stereotype.Component;
 
-
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 
 @Component("demoServiceComponent")
@@ -41,16 +42,41 @@ public class DemoServiceComponent {
         return demoService.sayHello(name);
     }
 
+
+    public String login(String name, String password) {
+        return demoService.login(name, password);
+
+    }
+
     public String greet() {
         RpcContext.getContext().setAttachment("okr", "uyun-okr-greet");
         return greetingService.hello();
     }
-    public String classes(){
-        Locale locale = demoService.javaClass(new Locale("ru", "russian"));
-        Locale locale2 = demoService.javaClasses("张三","coda2",new Locale("ru", "russian"));
-        return  locale.getCountry()+ ":" + locale2.getCountry();
-    }
-    
 
+    public String classes() {
+        Locale locale = demoService.javaClass(new Locale("ru", "russian"));
+        Locale locale2 = demoService.javaClasses("张三", "coda2", new Locale("ru", "russian"));
+        return locale.getCountry() + ":" + locale2.getCountry();
+    }
+
+    public String com() {
+        ComplicatedReq complicatedReq = new ComplicatedReq();
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("first");
+        complicatedReq.setStringList(strings);
+        complicatedReq.setName("name");
+        complicatedReq.setAge(10);
+        complicatedReq.setValue("value");
+        HashMap<Integer, String> stringHashMap = new HashMap<>();
+        stringHashMap.put(1, "1name");
+        complicatedReq.setStringMap(stringHashMap);
+        ComplicatedReq.InnerClass innerClass = new ComplicatedReq.InnerClass();
+        innerClass.setInnerName("innname");
+        innerClass.setInnerValue("invalue");
+        complicatedReq.setInnerClass(innerClass);
+        ComplicatedResp complicatedResp = demoService.queryComplicated(complicatedReq);
+        return JSONObject.toJSONString(complicatedResp);
+
+    }
 
 }

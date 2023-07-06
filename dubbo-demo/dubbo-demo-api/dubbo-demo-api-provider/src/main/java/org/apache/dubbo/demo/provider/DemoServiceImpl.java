@@ -37,6 +37,12 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
+    public String login(String name, String password) {
+        System.out.println("name :" + name + "password:" + password);
+        return "ok";
+    }
+
+    @Override
     public CompletableFuture<String> sayHelloAsync(String name) {
         return null;
     }

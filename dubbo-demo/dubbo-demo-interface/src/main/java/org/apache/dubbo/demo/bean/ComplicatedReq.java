@@ -2,6 +2,7 @@ package org.apache.dubbo.demo.bean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ysw
@@ -20,7 +21,23 @@ public class ComplicatedReq implements Serializable {
 
     private InnerClass innerClass;
 
-    public static class InnerClass implements Serializable{
+
+    private Map<Integer, String> stringMap;
+
+    public ComplicatedReq() {
+
+    }
+
+    public ComplicatedReq(String name, Integer age, String value, List<String> stringList, InnerClass innerClass, Map<Integer, String> stringMap) {
+        this.name = name;
+        this.age = age;
+        this.value = value;
+        this.stringList = stringList;
+        this.innerClass = innerClass;
+        this.stringMap = stringMap;
+    }
+
+    public static class InnerClass implements Serializable {
         private String innerName;
 
         private String innerValue;
@@ -42,6 +59,13 @@ public class ComplicatedReq implements Serializable {
         }
     }
 
+    public Map<Integer, String> getStringMap() {
+        return stringMap;
+    }
+
+    public void setStringMap(Map<Integer, String> stringMap) {
+        this.stringMap = stringMap;
+    }
 
     public String getName() {
         return name;

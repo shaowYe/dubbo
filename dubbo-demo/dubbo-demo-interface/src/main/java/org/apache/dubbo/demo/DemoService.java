@@ -26,6 +26,8 @@ public interface DemoService {
 
     String sayHello(String name);
 
+    String login(String name ,String password);
+
     default CompletableFuture<String> sayHelloAsync(String name) {
         return CompletableFuture.completedFuture(sayHello(name));
     }

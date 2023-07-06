@@ -17,6 +17,7 @@
 package org.apache.dubbo.demo.provider;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.demo.bean.ComplicatedReq;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @DubboService
@@ -38,6 +40,12 @@ public class DemoServiceImpl implements DemoService {
         logger.info("Hello " + name + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
         RpcContext.getContext().getObjectAttachments().entrySet().forEach(e -> logger.info(e.getKey() + "=" + e.getValue()));
         return "Hello " + name + ", response from provider: " + RpcContext.getContext().getLocalAddress();
+    }
+
+    @Override
+    public String login(String name, String password) {
+        System.out.println("name :" + name + "password:" + password);
+        return "ok";
     }
 
     @Override
@@ -53,30 +61,35 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public ComplicatedResp queryComplicated(ComplicatedReq complicatedReq) {
-        logger.info("请求参数: " + JSON.toJSONString(complicatedReq));
+        logger.info("请求参数: " + JSONObject.toJSONString(complicatedReq));
 
-        ComplicatedResp complicatedResp = new ComplicatedResp();
-        complicatedResp.setName(complicatedReq.getName());
-        complicatedResp.setAge(complicatedReq.getAge() + 1);
-        complicatedResp.setValue(complicatedReq.getValue());
-        ComplicatedResp.InnerClassResp classResp = new ComplicatedResp.InnerClassResp();
-        classResp.setInnerValue(complicatedReq.getInnerClass().getInnerValue());
-        classResp.setInnerName(complicatedReq.getInnerClass().getInnerName());
-        complicatedResp.setInnerClassResp(classResp);
+        ComplicatedResp complicatedResp = null;
+        complicatedResp = new ComplicatedResp();
         List<String> stringList = complicatedReq.getStringList();
+        Map<Integer,String> stringMap= complicatedReq.getStringMap();
         stringList.add("000");
+        stringMap.put(99,"valuee");
         complicatedResp.setStringList(stringList);
+        complicatedResp.setAge(complicatedReq.getAge());
+        complicatedResp.setName(complicatedReq.getName());
+        complicatedResp.setValue(complicatedReq.getValue());
+        complicatedResp.setStringMap(stringMap);
+        ComplicatedResp.InnerClassResp innerClassResp= new ComplicatedResp.InnerClassResp();
+        innerClassResp.setInnerName("innn");
+        innerClassResp.setInnerValue("innervalue");
+        complicatedResp.setInnerClassResp(innerClassResp);
+        logger.info("响应参数：" + JSONObject.toJSONString(complicatedResp));
         return complicatedResp;
     }
 
     @Override
     public Locale javaClass(Locale locale) {
-        return new Locale("EN","England");
+        return new Locale("EN", "England");
     }
 
     @Override
     public Locale javaClasses(String name, String code, Locale locale) {
-        return new Locale("EN","England");
+        return new Locale("EN", "England");
     }
 
 }

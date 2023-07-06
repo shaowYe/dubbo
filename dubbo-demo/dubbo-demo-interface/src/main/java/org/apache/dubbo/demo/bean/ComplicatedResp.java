@@ -2,6 +2,7 @@ package org.apache.dubbo.demo.bean;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ysw
@@ -17,6 +18,7 @@ public class ComplicatedResp implements Serializable {
 
     private List<String> stringList;
 
+    private Map<Integer, String> stringMap;
 
     private InnerClassResp innerClassResp;
 
@@ -42,6 +44,13 @@ public class ComplicatedResp implements Serializable {
         }
     }
 
+    public Map<Integer, String> getStringMap() {
+        return stringMap;
+    }
+
+    public void setStringMap(Map<Integer, String> stringMap) {
+        this.stringMap = stringMap;
+    }
 
     public String getName() {
         return name;
