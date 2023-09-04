@@ -47,7 +47,7 @@ public final class Version {
     // Dubbo implementation version, usually is jar version.
     private static final String VERSION = getVersion(Version.class, "");
 
-    private static final String UYUN_VERSION ="2.7.18-uyun";
+    private static final String UYUN_VERSION ="2.7.23-uyun";
     /**
      * For protocol compatibility purpose.
      * Because {@link #isSupportResponseAttachment} is checked for every call, int compare expect to has higher

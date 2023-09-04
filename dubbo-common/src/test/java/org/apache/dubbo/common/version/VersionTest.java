@@ -80,7 +80,7 @@ public class VersionTest {
     }
     @Test
     public void getUyunVersion() {
-        Assertions.assertEquals(Version.getVersion(),"2.7.18-uyun");
+        Assertions.assertEquals(Version.getVersion(),"2.7.23-uyun");
 
     }
 

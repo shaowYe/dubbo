@@ -11,14 +11,14 @@ public class DubboXUtilsTest {
     @Test
     public void testCheckNotDubboX(){
         String s1 = "2.7.18";
-        String s2 = "2.7.18.uyun";
+        String s2 = "2.7.23.uyun";
         String s3 = "3.0.0.2133322.uyun";
         String s4 = "2.8.4";
         String s5 = "18";
         String s6= "17.0.0";
 
         String s7 = "2.7.8.2020";
-        String s8 = "2.7.18.20230215";
+        String s8 = "2.7.23.20230215";
 
         String s9 = " ";
 

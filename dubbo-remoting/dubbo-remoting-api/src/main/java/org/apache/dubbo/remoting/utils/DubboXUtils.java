@@ -11,9 +11,10 @@ import org.apache.dubbo.common.utils.StringUtils;
 
 public class DubboXUtils {
     /**
-     * 如果该字符串以“2.7.18”开头或"2.7.8开头"或2.0.2开头或"uyun"结尾
+     * 如果该字符串以“2.7.23”开头或"2.7.8开头"或2.0.2开头或"uyun"结尾
      */
-    public static String REGEX = "^(2\\.7\\.18.*|2\\.7\\.8.*|2\\.0\\.2.*|.*uyun)$";
+//    public static String REGEX = "^(2\\.7\\.18.*|2\\.7\\.8.*|2\\.0\\.2.*|.*uyun)$";
+    private static String REGEX = "^(2\\.7\\..*|2\\.0\\.2.*|.*uyun)$";
 
 //    public static String REGEX = "^(2\\.7\\.18.*|2\\.7\\.8.*|2\\.0\\.2.*|.*uyun)$";
 
@@ -29,7 +30,7 @@ public class DubboXUtils {
 
     /**
      * 从url中获取 2.8.4 中 url dubbo 参数的版本号是version
-     * 2.7.8 ;2.7.18 中的 dubbo 版本号是 DUBBO_PROTOCOL_VERSION 2.0.2  release 参数中的是 version
+     * 2.7.8 ;2.7.23 中的 dubbo 版本号是 DUBBO_PROTOCOL_VERSION 2.0.2  release 参数中的是 version
      *
      * @param url
      * @return
