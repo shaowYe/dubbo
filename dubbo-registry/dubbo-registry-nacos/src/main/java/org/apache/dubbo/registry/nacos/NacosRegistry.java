@@ -123,9 +123,7 @@ public class NacosRegistry extends FailbackRegistry {
 
     private final NacosNamingServiceWrapper namingService;
 
-    private final ConcurrentMap<URL, ConcurrentMap<NotifyListener, NacosAggregateListener>> originToAggregateListener = new ConcurrentHashMap<>();
-
-    private final ConcurrentMap<URL, ConcurrentMap<NacosAggregateListener, EventListener>> nacosListeners = new ConcurrentHashMap<>();
+    private final ConcurrentMap<URL, Map<NotifyListener, Map<String, EventListener>>> nacosListeners = new ConcurrentHashMap<>();
 
     public NacosRegistry(URL url, NacosNamingServiceWrapper namingService) {
         super(url);
@@ -180,10 +178,7 @@ public class NacosRegistry extends FailbackRegistry {
 
     @Override
     public void doSubscribe(final URL url, final NotifyListener listener) {
-        NacosAggregateListener nacosAggregateListener = new NacosAggregateListener(listener);
-        originToAggregateListener.computeIfAbsent(url, k -> new ConcurrentHashMap<>()).put(listener, nacosAggregateListener);
-
-        Set<String> serviceNames = getServiceNames(url, nacosAggregateListener);
+        Set<String> serviceNames = getServiceNames(url, listener);
 
         //Set corresponding serviceNames for easy search later
         if (isServiceNamesWithCompatibleMode(url)) {
@@ -191,12 +186,14 @@ public class NacosRegistry extends FailbackRegistry {
                 NacosInstanceManageUtil.setCorrespondingServiceNames(serviceName, serviceNames);
             }
         }
-        doSubscribe(url, nacosAggregateListener, serviceNames);
+
+        doSubscribe(url, listener, serviceNames);
     }
 
-    private void doSubscribe(final URL url, final NacosAggregateListener listener, final Set<String> serviceNames) {
+    private void doSubscribe(final URL url, final NotifyListener listener, final Set<String> serviceNames) {
         execute(namingService -> {
             if (isServiceNamesWithCompatibleMode(url)) {
+                List<Instance> allCorrespondingInstanceList = new ArrayList<>();
 
                 /**
                  * Get all instances with serviceNames to avoid instance overwrite and but with empty instance mentioned
@@ -211,8 +208,9 @@ public class NacosRegistry extends FailbackRegistry {
                     List<Instance> instances = namingService.getAllInstances(serviceName,
                             getUrl().getParameter(GROUP_KEY, Constants.DEFAULT_GROUP));
                     NacosInstanceManageUtil.initOrRefreshServiceInstanceList(serviceName, instances);
-                    notifySubscriber(url, serviceName, listener, instances);
+                    allCorrespondingInstanceList.addAll(instances);
                 }
+                notifySubscriber(url, listener, allCorrespondingInstanceList);
                 for (String serviceName : serviceNames) {
                     subscribeEventListener(serviceName, url, listener);
                 }
@@ -221,7 +219,7 @@ public class NacosRegistry extends FailbackRegistry {
                 for (String serviceName : serviceNames) {
                     instances.addAll(namingService.getAllInstances(serviceName
                             , getUrl().getParameter(GROUP_KEY, Constants.DEFAULT_GROUP)));
-                    notifySubscriber(url, serviceName, listener, instances);
+                    notifySubscriber(url, listener, instances);
                     subscribeEventListener(serviceName, url, listener);
                 }
             }
@@ -245,23 +243,16 @@ public class NacosRegistry extends FailbackRegistry {
         if (isAdminProtocol(url)) {
             shutdownServiceNamesLookup();
         } else {
-            Map<NotifyListener, NacosAggregateListener> listenerMap = originToAggregateListener.get(url);
-            NacosAggregateListener nacosAggregateListener = listenerMap.remove(listener);
-            if (nacosAggregateListener != null) {
-                Set<String> serviceNames = getServiceNames(url, nacosAggregateListener);
+            Set<String> serviceNames = getServiceNames(url, listener);
 
-                doUnsubscribe(url, nacosAggregateListener, serviceNames);
-            }
-            if (listenerMap.isEmpty()) {
-                originToAggregateListener.remove(url);
-            }
+            doUnsubscribe(url, listener, serviceNames);
         }
     }
 
-    private void doUnsubscribe(final URL url, final NacosAggregateListener nacosAggregateListener, final Set<String> serviceNames) {
+    private void doUnsubscribe(final URL url, final NotifyListener listener, final Set<String> serviceNames) {
         execute(namingService -> {
             for (String serviceName : serviceNames) {
-                unsubscribeEventListener(serviceName, url, nacosAggregateListener);
+                unsubscribeEventListener(serviceName, url, listener);
             }
         });
     }
@@ -279,7 +270,7 @@ public class NacosRegistry extends FailbackRegistry {
      * @param listener {@link NotifyListener}
      * @return non-null
      */
-    private Set<String> getServiceNames(URL url, NacosAggregateListener listener) {
+    private Set<String> getServiceNames(URL url, NotifyListener listener) {
         if (isAdminProtocol(url)) {
             scheduleServiceNamesLookup(url, listener);
             return getServiceNamesForOps(url);
@@ -364,7 +355,7 @@ public class NacosRegistry extends FailbackRegistry {
         return ADMIN_PROTOCOL.equals(url.getProtocol());
     }
 
-    private void scheduleServiceNamesLookup(final URL url, final NacosAggregateListener listener) {
+    private void scheduleServiceNamesLookup(final URL url, final NotifyListener listener) {
         if (scheduledExecutorService == null) {
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
             scheduledExecutorService.scheduleAtFixedRate(() -> {
@@ -517,41 +508,42 @@ public class NacosRegistry extends FailbackRegistry {
         return urls;
     }
 
-    private void subscribeEventListener(String serviceName, final URL url, final NacosAggregateListener listener)
+    private void subscribeEventListener(String serviceName, final URL url, final NotifyListener listener)
             throws NacosException {
-        ConcurrentMap<NacosAggregateListener, EventListener> listeners = nacosListeners.computeIfAbsent(url, k -> new ConcurrentHashMap<>());
-        EventListener nacosListener = listeners.computeIfAbsent(listener, k -> {
-            EventListener eventListener = event -> {
-                if (event instanceof NamingEvent) {
-                    NamingEvent e = (NamingEvent) event;
-                    List<Instance> instances = e.getInstances();
+        Map<NotifyListener, Map<String, EventListener>> listeners = nacosListeners.computeIfAbsent(url, k -> new ConcurrentHashMap<>());
+        Map<String, EventListener> eventListenerMap = listeners.computeIfAbsent(listener, k -> new ConcurrentHashMap<>());
+        EventListener nacosListener = eventListenerMap.computeIfAbsent(serviceName,
+                name -> event -> {
+                    if (event instanceof NamingEvent) {
+                        NamingEvent e = (NamingEvent) event;
+                        List<Instance> instances = e.getInstances();
+                        if (isServiceNamesWithCompatibleMode(url)) {
 
+                            // Get all instances with corresponding serviceNames to avoid instance overwrite and but with empty instance mentioned
+                            // in https://github.com/apache/dubbo/issues/5885 and https://github.com/apache/dubbo/issues/5899
+                            NacosInstanceManageUtil.initOrRefreshServiceInstanceList(name, instances);
+                            instances = NacosInstanceManageUtil.getAllCorrespondingServiceInstanceList(name);
+                        }
 
-                    if (isServiceNamesWithCompatibleMode(url)) {
-
-                        // Get all instances with corresponding serviceNames to avoid instance overwrite and but with empty instance mentioned
-                        // in https://github.com/apache/dubbo/issues/5885 and https://github.com/apache/dubbo/issues/5899
-                        NacosInstanceManageUtil.initOrRefreshServiceInstanceList(serviceName, instances);
-                        instances = NacosInstanceManageUtil.getAllCorrespondingServiceInstanceList(serviceName);
+                        notifySubscriber(url, listener, instances);
                     }
-
-                    notifySubscriber(url, serviceName, listener, instances);
-                }
-            };
-            return eventListener;
-        });
+                });
         namingService.subscribe(serviceName,
                 getUrl().getParameter(GROUP_KEY, Constants.DEFAULT_GROUP),
                 nacosListener);
     }
 
-    private void unsubscribeEventListener(String serviceName, final URL url, final NacosAggregateListener listener)
+    private void unsubscribeEventListener(String serviceName, final URL url, final NotifyListener listener)
             throws NacosException {
-        ConcurrentMap<NacosAggregateListener, EventListener> notifyListenerEventListenerConcurrentMap = nacosListeners.get(url);
+        Map<NotifyListener, Map<String, EventListener>> notifyListenerEventListenerConcurrentMap = nacosListeners.get(url);
         if (notifyListenerEventListenerConcurrentMap == null) {
             return;
         }
-        EventListener nacosListener = notifyListenerEventListenerConcurrentMap.get(listener);
+        Map<String, EventListener> listenerMap = notifyListenerEventListenerConcurrentMap.get(listener);
+        if (listenerMap == null) {
+            return;
+        }
+        EventListener nacosListener = listenerMap.remove(serviceName);
         if (nacosListener == null) {
             return;
         }
@@ -567,14 +559,14 @@ public class NacosRegistry extends FailbackRegistry {
      * @param listener  {@link NotifyListener}
      * @param instances all {@link Instance instances}
      */
-    private void notifySubscriber(URL url, String serviceName, NacosAggregateListener listener, Collection<Instance> instances) {
+    private void notifySubscriber(URL url, NotifyListener listener, Collection<Instance> instances) {
         List<Instance> enabledInstances = new LinkedList<>(instances);
         if (enabledInstances.size() > 0) {
             //  Instances
             filterEnabledInstances(enabledInstances);
         }
-        List<URL> aggregatedUrls = toUrlWithEmpty(url, listener.saveAndAggregateAllInstances(serviceName, enabledInstances));
-        NacosRegistry.this.notify(url, listener.getNotifyListener(), aggregatedUrls);
+        List<URL> urls = toUrlWithEmpty(url, enabledInstances);
+        NacosRegistry.this.notify(url, listener, urls);
     }
 
     /**
