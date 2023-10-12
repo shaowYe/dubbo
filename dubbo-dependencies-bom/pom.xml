@@ -123,7 +123,7 @@
         <fst_version>2.48-jdk-6</fst_version>
         <avro_version>1.8.2</avro_version>
         <apollo_client_version>1.8.0</apollo_client_version>
-        <snakeyaml_version>1.20</snakeyaml_version>
+        <snakeyaml_version>2.2</snakeyaml_version>
         <commons_lang3_version>3.8.1</commons_lang3_version>
         <protostuff_version>1.5.9</protostuff_version>
 
@@ -169,7 +169,7 @@
         <mortbay_jetty_version>6.1.26</mortbay_jetty_version>
         <portlet_version>2.0</portlet_version>
         <maven_flatten_version>1.1.0</maven_flatten_version>
-        <revision>2.7.23-20230927</revision>
+        <revision>2.7.23-20231007</revision>
     </properties>
 
     <dependencyManagement>

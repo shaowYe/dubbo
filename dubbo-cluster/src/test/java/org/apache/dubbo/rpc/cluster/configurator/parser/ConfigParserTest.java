@@ -22,6 +22,7 @@ import org.apache.dubbo.rpc.cluster.configurator.parser.model.ConfiguratorConfig
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -53,7 +54,7 @@ public class ConfigParserTest {
     public void snakeYamlBasicTest() throws IOException {
         try (InputStream yamlStream = this.getClass().getResourceAsStream("/ServiceNoApp.yml")) {
 
-            Constructor constructor = new Constructor(ConfiguratorConfig.class);
+            Constructor constructor = new Constructor(ConfiguratorConfig.class, new LoaderOptions());
             TypeDescription carDescription = new TypeDescription(ConfiguratorConfig.class);
             carDescription.addPropertyParameters("items", ConfigItem.class);
             constructor.addTypeDescription(carDescription);
