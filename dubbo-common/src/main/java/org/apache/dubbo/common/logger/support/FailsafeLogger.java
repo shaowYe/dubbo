@@ -17,6 +17,7 @@
 package org.apache.dubbo.common.logger.support;
 
 import org.apache.dubbo.common.Version;
+import org.apache.dubbo.common.dubbx.DubboXFlag;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.utils.NetUtils;
 
@@ -37,7 +38,7 @@ public class FailsafeLogger implements Logger {
     }
 
     private String appendContextMessage(String msg) {
-        return " [DUBBO] " + msg + ", dubbo version: " + Version.getVersion() + ", current host: " + NetUtils.getLocalHost();
+        return " [DUBBO] " + msg + ", dubbo version: " + Version.getVersion() + ", current host: " + NetUtils.getLocalHost() +", dubbox flag: "+ DubboXFlag.DUBBOX_FLAG.get();
     }
 
     @Override
