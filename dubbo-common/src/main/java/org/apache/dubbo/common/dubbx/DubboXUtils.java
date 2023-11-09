@@ -1,4 +1,4 @@
-package org.apache.dubbo.remoting.utils;
+package org.apache.dubbo.common.dubbx;
 
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.constants.CommonConstants;

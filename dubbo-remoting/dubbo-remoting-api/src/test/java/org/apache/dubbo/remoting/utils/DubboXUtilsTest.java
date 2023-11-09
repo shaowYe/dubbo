@@ -1,5 +1,6 @@
 package org.apache.dubbo.remoting.utils;
 
+import org.apache.dubbo.common.dubbx.DubboXUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

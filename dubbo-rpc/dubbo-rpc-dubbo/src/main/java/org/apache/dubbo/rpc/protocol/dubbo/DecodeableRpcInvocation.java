@@ -29,7 +29,7 @@ import org.apache.dubbo.remoting.Codec;
 import org.apache.dubbo.remoting.Decodeable;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.transport.CodecSupport;
-import org.apache.dubbo.remoting.utils.DubboXUtils;
+import org.apache.dubbo.common.dubbx.DubboXUtils;
 import org.apache.dubbo.rpc.RpcInvocation;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.MethodDescriptor;
@@ -45,7 +45,7 @@ import java.util.Map;
 
 import static org.apache.dubbo.common.URL.buildKey;
 import static org.apache.dubbo.common.constants.CommonConstants.*;
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.dubbx.DubboXFlag.DUBBOX_FLAG;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_ID_KEY;
 import static org.apache.dubbo.rpc.Constants.SERIALIZATION_SECURITY_CHECK_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.decodeInvocationArgument;
@@ -124,7 +124,7 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
                 decodeForDubbox(channel, in);
                 return this;
             }
-
+            DUBBOX_FLAG.set(false);
             String desc = in.readUTF();
             setParameterTypesDesc(desc);
 
@@ -276,8 +276,6 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
-        }finally {
-            DUBBOX_FLAG.remove();
         }
     }
 }

@@ -29,6 +29,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static org.apache.dubbo.common.dubbx.DubboXFlag.DUBBOX_FLAG;
+
 /**
  * The most important difference between this Executor and other normal Executor is that this one doesn't manage
  * any thread.
@@ -185,17 +187,29 @@ public class ThreadlessExecutor extends AbstractExecutorService {
 
     private static class RunnableWrapper implements Runnable {
         private Runnable runnable;
+        private Boolean dubboXFlag;
 
         public RunnableWrapper(Runnable runnable) {
+            //获取当前线程的DubboX 标记
+            if (DUBBOX_FLAG.get() != null) {
+                dubboXFlag = DUBBOX_FLAG.get();
+            }
             this.runnable = runnable;
         }
 
         @Override
         public void run() {
             try {
+                if (dubboXFlag != null) {
+                    DUBBOX_FLAG.set(dubboXFlag);
+                }
                 runnable.run();
             } catch (Throwable t) {
                 logger.info(t);
+            } finally {
+                //最终清空下DubboX 标记，防止线程池重复使用线程带来的ThreadLocal数据遗留问题
+                dubboXFlag = null;
+                DUBBOX_FLAG.remove();
             }
         }
     }

@@ -31,18 +31,15 @@ import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.exchange.Response;
 import org.apache.dubbo.remoting.exchange.codec.ExchangeCodec;
 import org.apache.dubbo.remoting.transport.CodecSupport;
-import org.apache.dubbo.remoting.utils.DubboXUtils;
-import org.apache.dubbo.rpc.AppResponse;
-import org.apache.dubbo.rpc.Invocation;
-import org.apache.dubbo.rpc.Result;
-import org.apache.dubbo.rpc.RpcInvocation;
+import org.apache.dubbo.common.dubbx.DubboXUtils;
+import org.apache.dubbo.rpc.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static org.apache.dubbo.common.constants.CommonConstants.*;
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.dubbx.DubboXFlag.DUBBOX_FLAG;
 import static org.apache.dubbo.rpc.protocol.dubbo.CallbackServiceCodec.encodeInvocationArgument;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DECODE_IN_IO_THREAD_KEY;
 import static org.apache.dubbo.rpc.protocol.dubbo.Constants.DEFAULT_DECODE_IN_IO_THREAD;
@@ -194,7 +191,7 @@ public class DubboCodec extends ExchangeCodec {
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
         }
-
+        DUBBOX_FLAG.set(false);
         out.writeUTF(version);
         // https://github.com/apache/dubbo/issues/6138
         String serviceName = inv.getAttachment(INTERFACE_KEY);
@@ -245,7 +242,7 @@ public class DubboCodec extends ExchangeCodec {
             out.writeObject(inv.getAttachments());
         } finally {
             //移除dubboX标记
-            DUBBOX_FLAG.remove();
+//            DUBBOX_FLAG.remove();
         }
     }
 

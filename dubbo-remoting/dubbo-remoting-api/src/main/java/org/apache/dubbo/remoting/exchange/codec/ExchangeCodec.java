@@ -38,7 +38,7 @@ import org.apache.dubbo.remoting.exchange.support.DefaultFuture;
 import org.apache.dubbo.remoting.telnet.codec.TelnetCodec;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.remoting.transport.ExceedPayloadLimitException;
-import org.apache.dubbo.remoting.utils.DubboXUtils;
+import org.apache.dubbo.common.dubbx.DubboXUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,7 +46,8 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.dubbx.DubboXFlag.DUBBOX_FLAG;
+
 
 /**
  * ExchangeCodec.
@@ -226,10 +227,10 @@ public class ExchangeCodec extends TelnetCodec {
         }
 
         logger.warn("The timeout response finally returned at "
-            + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()))
-            + ", response status is " + response.getStatus() + ", response id is " + response.getId()
-            + (channel == null ? "" : ", channel: " + channel.getLocalAddress()
-            + " -> " + channel.getRemoteAddress()) + ", please check provider side for detailed result.");
+                + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()))
+                + ", response status is " + response.getStatus() + ", response id is " + response.getId()
+                + (channel == null ? "" : ", channel: " + channel.getLocalAddress()
+                + " -> " + channel.getRemoteAddress()) + ", please check provider side for detailed result.");
         throw new IllegalArgumentException("Failed to find any request match the response, response id: " + id);
     }
 
@@ -310,18 +311,16 @@ public class ExchangeCodec extends TelnetCodec {
 
             // encode response data or error message.
             if (status == Response.OK) {
-                if(res.isHeartbeat()){
+                if (res.isHeartbeat()) {
                     // heartbeat response data is always null
                     bos.write(CodecSupport.getNullBytesOf(serialization));
-                }else {
+                } else {
                     ObjectOutput out = serialization.serialize(channel.getUrl(), bos);
                     if (res.isEvent()) {
                         encodeEventData(channel, out, res.getResult());
                     } else {
                         //设置dubbo 版本号的threadlocal标记
-                        if (DubboXUtils.checkDubboX(res.getVersion())) {
-                            DUBBOX_FLAG.set(true);
-                        }
+                        DUBBOX_FLAG.set(DubboXUtils.checkDubboX(res.getVersion()));
                         encodeResponseData(channel, out, res.getResult(), res.getVersion());
                     }
                     out.flushBuffer();
@@ -388,8 +387,6 @@ public class ExchangeCodec extends TelnetCodec {
             } else {
                 throw new RuntimeException(t.getMessage(), t);
             }
-        } finally {
-            DUBBOX_FLAG.remove();
         }
     }
 

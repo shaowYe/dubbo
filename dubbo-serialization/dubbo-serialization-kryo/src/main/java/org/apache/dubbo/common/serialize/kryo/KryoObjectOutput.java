@@ -25,7 +25,7 @@ import org.apache.dubbo.common.serialize.kryo.utils.KryoUtils;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static org.apache.dubbo.common.serialize.support.SerializableClassRegistry.DUBBOX_FLAG;
+import static org.apache.dubbo.common.dubbx.DubboXFlag.DUBBOX_FLAG;
 
 /**
  * Kryo object output implementation, kryo object can be clean

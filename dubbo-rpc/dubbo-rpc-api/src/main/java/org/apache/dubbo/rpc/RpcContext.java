@@ -22,7 +22,7 @@ import org.apache.dubbo.common.threadlocal.InternalThreadLocal;
 import org.apache.dubbo.common.utils.CollectionUtils;
 import org.apache.dubbo.common.utils.NetUtils;
 import org.apache.dubbo.common.utils.StringUtils;
-import org.apache.dubbo.remoting.utils.DubboXUtils;
+import org.apache.dubbo.common.dubbx.DubboXUtils;
 
 import java.net.InetSocketAddress;
 import java.util.*;
