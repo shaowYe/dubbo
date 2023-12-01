@@ -19,6 +19,7 @@ package org.apache.dubbo.demo.provider;
 import com.alibaba.fastjson.JSON;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.ExampleException;
 import org.apache.dubbo.demo.bean.ComplicatedReq;
 import org.apache.dubbo.demo.bean.ComplicatedResp;
 import org.apache.dubbo.rpc.RpcContext;
@@ -47,7 +48,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public String error(String error) {
-        throw new RuntimeException("this is an exception from provider");
+        throw new ExampleException("this is an exception from provider");
 
     }
 

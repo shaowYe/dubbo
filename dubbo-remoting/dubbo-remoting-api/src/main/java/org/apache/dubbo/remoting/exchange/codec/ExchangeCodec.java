@@ -390,6 +390,8 @@ public class ExchangeCodec extends TelnetCodec {
             } else {
                 throw new RuntimeException(t.getMessage(), t);
             }
+        }finally {
+            DUBBOX_FLAG.remove();
         }
     }
 

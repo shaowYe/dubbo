@@ -78,46 +78,50 @@ public class DecodeableRpcResult extends AppResponse implements Codec, Decodeabl
 
     @Override
     public Object decode(Channel channel, InputStream input) throws IOException {
-        if (log.isDebugEnabled()) {
-            Thread thread = Thread.currentThread();
-            log.debug("Decoding in thread -- [" + thread.getName() + "#" + thread.getId() + "]");
-        }
-        ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
-                .deserialize(channel.getUrl(), input);
-        //根据 response id 从 cache 中拿到 dubboX 标记
-        Boolean dubboXFlag = DefaultFuture.getDubboXFlag(response.getId());
-        if (dubboXFlag != null && dubboXFlag) {
-            log.info("get dubbox flag from cache with  response id" + response.getId());
-            DubboXFlag.DUBBOX_FLAG.set(true);
-        }
-        byte flag = in.readByte();
-        switch (flag) {
-            case DubboCodec.RESPONSE_NULL_VALUE:
-                break;
-            case DubboCodec.RESPONSE_VALUE:
-                handleValue(in);
-                break;
-            case DubboCodec.RESPONSE_WITH_EXCEPTION:
-                handleException(in);
-                break;
-            case DubboCodec.RESPONSE_NULL_VALUE_WITH_ATTACHMENTS:
-                handleAttachment(in);
-                break;
-            case DubboCodec.RESPONSE_VALUE_WITH_ATTACHMENTS:
-                handleValue(in);
-                handleAttachment(in);
-                break;
-            case DubboCodec.RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS:
-                handleException(in);
-                handleAttachment(in);
-                break;
-            default:
-                throw new IOException("Unknown result flag, expect '0' '1' '2' '3' '4' '5', but received: " + flag);
-        }
-        if (in instanceof Cleanable) {
-            ((Cleanable) in).cleanup();
-        }
-        return this;
+      try {
+          if (log.isDebugEnabled()) {
+              Thread thread = Thread.currentThread();
+              log.debug("Decoding in thread -- [" + thread.getName() + "#" + thread.getId() + "]");
+          }
+          ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
+                  .deserialize(channel.getUrl(), input);
+          //根据 response id 从 cache 中拿到 dubboX 标记
+          Boolean dubboXFlag = DefaultFuture.getDubboXFlag(response.getId());
+          if (dubboXFlag != null && dubboXFlag) {
+              log.info("get dubbox flag from cache with response id: " + response.getId());
+              DubboXFlag.DUBBOX_FLAG.set(true);
+          }
+          byte flag = in.readByte();
+          switch (flag) {
+              case DubboCodec.RESPONSE_NULL_VALUE:
+                  break;
+              case DubboCodec.RESPONSE_VALUE:
+                  handleValue(in);
+                  break;
+              case DubboCodec.RESPONSE_WITH_EXCEPTION:
+                  handleException(in);
+                  break;
+              case DubboCodec.RESPONSE_NULL_VALUE_WITH_ATTACHMENTS:
+                  handleAttachment(in);
+                  break;
+              case DubboCodec.RESPONSE_VALUE_WITH_ATTACHMENTS:
+                  handleValue(in);
+                  handleAttachment(in);
+                  break;
+              case DubboCodec.RESPONSE_WITH_EXCEPTION_WITH_ATTACHMENTS:
+                  handleException(in);
+                  handleAttachment(in);
+                  break;
+              default:
+                  throw new IOException("Unknown result flag, expect '0' '1' '2' '3' '4' '5', but received: " + flag);
+          }
+          if (in instanceof Cleanable) {
+              ((Cleanable) in).cleanup();
+          }
+          return this;
+      }finally {
+          DubboXFlag.DUBBOX_FLAG.remove();
+      }
     }
 
     @Override
