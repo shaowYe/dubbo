@@ -119,12 +119,11 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
 
         try {
-            log.info("decode from input, consumer version: " + dubboVersion);
+            log.info("decode from input, consumer version: " + dubboVersion+ "request id :" +request.getId());
             if (DubboXUtils.checkDubboX(dubboVersion)) {
                 decodeForDubbox(channel, in);
                 return this;
             }
-            DUBBOX_FLAG.set(false);
             String desc = in.readUTF();
             setParameterTypesDesc(desc);
 
@@ -276,6 +275,8 @@ public class DecodeableRpcInvocation extends RpcInvocation implements Codec, Dec
 
         } catch (ClassNotFoundException e) {
             throw new IOException(StringUtils.toString("Read invocation data failed.", e));
+        }finally {
+            DUBBOX_FLAG.remove();
         }
     }
 }

@@ -17,6 +17,7 @@
 package org.apache.dubbo.rpc.protocol.dubbo;
 
 import org.apache.dubbo.common.config.ConfigurationUtils;
+import org.apache.dubbo.common.dubbx.DubboXFlag;
 import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.common.logger.LoggerFactory;
 import org.apache.dubbo.common.serialize.Cleanable;
@@ -28,6 +29,7 @@ import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.Codec;
 import org.apache.dubbo.remoting.Decodeable;
 import org.apache.dubbo.remoting.exchange.Response;
+import org.apache.dubbo.remoting.exchange.support.DefaultFuture;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.rpc.AppResponse;
 import org.apache.dubbo.rpc.Invocation;
@@ -80,10 +82,14 @@ public class DecodeableRpcResult extends AppResponse implements Codec, Decodeabl
             Thread thread = Thread.currentThread();
             log.debug("Decoding in thread -- [" + thread.getName() + "#" + thread.getId() + "]");
         }
-
         ObjectInput in = CodecSupport.getSerialization(channel.getUrl(), serializationType)
                 .deserialize(channel.getUrl(), input);
-
+        //根据 response id 从 cache 中拿到 dubboX 标记
+        Boolean dubboXFlag = DefaultFuture.getDubboXFlag(response.getId());
+        if (dubboXFlag != null && dubboXFlag) {
+            log.info("get dubbox flag from cache with  response id" + response.getId());
+            DubboXFlag.DUBBOX_FLAG.set(true);
+        }
         byte flag = in.readByte();
         switch (flag) {
             case DubboCodec.RESPONSE_NULL_VALUE:

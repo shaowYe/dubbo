@@ -52,6 +52,8 @@ public class DefaultFuture extends CompletableFuture<Object> {
 
     private static final Map<Long, DefaultFuture> FUTURES = new ConcurrentHashMap<>();
 
+    private static final Map<Long, Boolean> DubboXFlags = new ConcurrentHashMap<>();
+
     public static final Timer TIME_OUT_TIMER = new HashedWheelTimer(
             new NamedThreadFactory("dubbo-future-timeout", true),
             30,
@@ -120,6 +122,14 @@ public class DefaultFuture extends CompletableFuture<Object> {
         return FUTURES.get(id);
     }
 
+    public static Boolean getDubboXFlag(long id) {
+        return DubboXFlags.get(id);
+    }
+
+    public static Boolean setDubboXFlag(long id, boolean dubboXflag) {
+        return DubboXFlags.put(id, dubboXflag);
+    }
+
     public static boolean hasFuture(Channel channel) {
         return CHANNELS.containsValue(channel);
     }
@@ -177,6 +187,7 @@ public class DefaultFuture extends CompletableFuture<Object> {
             }
         } finally {
             CHANNELS.remove(response.getId());
+            DubboXFlags.remove(response.getId());
         }
     }
 
@@ -188,6 +199,7 @@ public class DefaultFuture extends CompletableFuture<Object> {
         this.doReceived(errorResult);
         FUTURES.remove(id);
         CHANNELS.remove(id);
+        DubboXFlags.remove(id);
         return true;
     }
 

@@ -267,7 +267,9 @@ public class ExchangeCodec extends TelnetCodec {
             if (req.isEvent()) {
                 encodeEventData(channel, out, req.getData());
             } else {
-                encodeRequestData(channel, out, req.getData(), req.getVersion());
+                // encodeRequestData(channel, out, req.getData(), req.getVersion());
+                // 把 request 信息透传到方法中
+                encodeRequestData(channel, out, req);
             }
             out.flushBuffer();
             if (out instanceof Cleanable) {
@@ -320,6 +322,7 @@ public class ExchangeCodec extends TelnetCodec {
                         encodeEventData(channel, out, res.getResult());
                     } else {
                         //设置dubbo 版本号的threadlocal标记
+                        logger.info("dubbo consumer version : " + res.getVersion() + " response id : " + res.getId());
                         DUBBOX_FLAG.set(DubboXUtils.checkDubboX(res.getVersion()));
                         encodeResponseData(channel, out, res.getResult(), res.getVersion());
                     }
@@ -489,6 +492,10 @@ public class ExchangeCodec extends TelnetCodec {
 
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         encodeRequestData(out, data);
+    }
+
+    protected void encodeRequestData(Channel channel, ObjectOutput out, Request req) throws IOException {
+        encodeRequestData(out, req.getData());
     }
 
     protected void encodeResponseData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {

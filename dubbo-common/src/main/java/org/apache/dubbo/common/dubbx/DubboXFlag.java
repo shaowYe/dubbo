@@ -10,5 +10,5 @@ public class DubboXFlag {
     /**
      * 当前线程处理的是否是 dubboX
      */
-    public static  InternalThreadLocal<Boolean> DUBBOX_FLAG = new InternalThreadLocal<>();
+    public static final ThreadLocal<Boolean> DUBBOX_FLAG = new ThreadLocal<>();
 }

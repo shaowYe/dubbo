@@ -30,6 +30,7 @@ import org.apache.dubbo.remoting.Channel;
 import org.apache.dubbo.remoting.exchange.Request;
 import org.apache.dubbo.remoting.exchange.Response;
 import org.apache.dubbo.remoting.exchange.codec.ExchangeCodec;
+import org.apache.dubbo.remoting.exchange.support.DefaultFuture;
 import org.apache.dubbo.remoting.transport.CodecSupport;
 import org.apache.dubbo.common.dubbx.DubboXUtils;
 import org.apache.dubbo.rpc.*;
@@ -179,19 +180,52 @@ public class DubboCodec extends ExchangeCodec {
     @Override
     protected void encodeRequestData(Channel channel, ObjectOutput out, Object data, String version) throws IOException {
         RpcInvocation inv = (RpcInvocation) data;
-
-//        URL url = channel.getUrl();
-//        String remoteDubboVersion = url.getParameter("dubbo");
         // fix channel复用影响 channel取到的version与实际的不一致
         String remoteDubboVersion = inv.getInvoker().getUrl().getParameter("dubbo");
         //判断是不是dubboX
-
-        log.info("provider version: " + remoteDubboVersion);
+        log.info("provider: " + inv.getInvoker().getUrl().getServiceInterface() + " , " + inv.getInvoker().getUrl().getHost() + ", version: " + remoteDubboVersion);
         if (DubboXUtils.checkDubboXURL(inv.getInvoker().getUrl())) {
             encodeRequestDataForDubbox(channel, out, data, version);
             return;
         }
-        DUBBOX_FLAG.set(false);
+        out.writeUTF(version);
+        // https://github.com/apache/dubbo/issues/6138
+        String serviceName = inv.getAttachment(INTERFACE_KEY);
+        if (serviceName == null) {
+            serviceName = inv.getAttachment(PATH_KEY);
+        }
+        out.writeUTF(serviceName);
+        out.writeUTF(inv.getAttachment(VERSION_KEY));
+
+        out.writeUTF(inv.getMethodName());
+
+        out.writeUTF(inv.getParameterTypesDesc());
+        Object[] args = inv.getArguments();
+        if (args != null) {
+            for (int i = 0; i < args.length; i++) {
+                out.writeObject(encodeInvocationArgument(channel, inv, i));
+            }
+        }
+        out.writeAttachments(inv.getObjectAttachments());
+    }
+
+
+    @Override
+    protected void encodeRequestData(Channel channel, ObjectOutput out, Request request) throws IOException {
+        Object data = request.getData();
+        String version = request.getVersion();
+        RpcInvocation inv = (RpcInvocation) data;
+
+        // fix channel复用影响 channel取到的version与实际的不一致
+        String remoteDubboVersion = inv.getInvoker().getUrl().getParameter("dubbo");
+        //判断是不是dubboX
+        log.info("provider: " + inv.getInvoker().getUrl().getServiceInterface() + " , " + inv.getInvoker().getUrl().getHost() + ", version: " + remoteDubboVersion + "requestId: " + request.getId());
+        if (DubboXUtils.checkDubboXURL(inv.getInvoker().getUrl())) {
+            //把 dubbo
+            DefaultFuture.setDubboXFlag(request.getId(), true);
+            encodeRequestDataForDubbox(channel, out, data, version);
+            return;
+        }
         out.writeUTF(version);
         // https://github.com/apache/dubbo/issues/6138
         String serviceName = inv.getAttachment(INTERFACE_KEY);
@@ -242,7 +276,7 @@ public class DubboCodec extends ExchangeCodec {
             out.writeObject(inv.getAttachments());
         } finally {
             //移除dubboX标记
-//            DUBBOX_FLAG.remove();
+            DUBBOX_FLAG.remove();
         }
     }
 
